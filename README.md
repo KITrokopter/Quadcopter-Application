@@ -1,7 +1,7 @@
-implementation
+modQuadcopter
 ==============
 
-quadcopter
+quadcopter module
 ==============
 Needed for python program as library:
 hg clone https://bitbucket.org/bitcraze/crazyflie-pc-client
