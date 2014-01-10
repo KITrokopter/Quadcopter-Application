@@ -1,4 +1,4 @@
-modQuadcopter
+Quadcopter-Application
 ==============
 
 quadcopter module
