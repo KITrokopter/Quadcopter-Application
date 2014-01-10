@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import time
 import threading
 import logging
@@ -45,7 +45,7 @@ class CrazyDemo(object):
             time.sleep(0.04)
 
     def connected(self, link_uri):
-        print("crazyflie setup complete %s" % link_uri)
+        print 'crazyflie setup complete %s' % link_uri
         stabilizerconf = LogConfig("Stabilizer", 10)
         stabilizerconf.addVariable(LogVariable("stabilizer.roll"))
         stabilizerconf.addVariable(LogVariable("stabilizer.pitch"))
@@ -57,18 +57,18 @@ class CrazyDemo(object):
             self.stabilizerlog.dataReceived.add_callback(self.stabilizer_data)
             self.stabilizerlog.start()
         else:
-            print("stabilzer not found in log TOC")
+            print "stabilzer not found in log TOC"
 
     def disconnected(self, link_uri):
         # self.stabilizerlog.dataReceived.remove_callback()
         self.stabilizerlog.stop()
 
     def stabilizer_data(self, data):
-        print("roll", data['stabilizer.roll'])
-        print("pitch", data['stabilizer.pitch'])
+        print 'roll', data['stabilizer.roll']
+        print 'pitch', data['stabilizer.pitch']
 
     def stop(self):
-        print("closing link")
+        print 'closing link'
         self.stopevent.set()
         self.cf.close_link()
 
@@ -86,13 +86,13 @@ class SendPoints(threading.Thread):
     def run(self):
         logger.debug("sendpoints thread started")
         while not self.stopevent.is_set():
-            print(self.point)
+            print self.point
             self.cf.commander.send_setpoint(self.point['roll'],
                                             self.point['pitch'],
                                             self.point['yawrate'],
                                             self.point['thrust'])
             self.stopevent.wait(0.02)
-        print("stopping sendpoint thread")
+        print 'stopping sendpoint thread'
 
 
 c = CrazyDemo()
