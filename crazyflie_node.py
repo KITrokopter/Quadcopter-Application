@@ -49,7 +49,7 @@ class CrazyflieNode:
         
         self.link_status = "Unknown"
         self.link_quality = 0.0
-		self.battery_status = 0.0
+        self.battery_status = 0.0
         self.packetsSinceConnection = 0
         self.motor_status = ""
         self.pitch = 0.0
@@ -69,7 +69,7 @@ class CrazyflieNode:
         # Init the published topics for ROS, for this class
         self.link_status_pub  = rospy.Publisher('link_status', String, latch=True)
         self.link_quality_pub = rospy.Publisher('link_quality', Float32)
-		self.battery_status_pub = rospy.Publisher('battery_status', Float32)
+        self.battery_status_pub = rospy.Publisher('battery_status', Float32)
         self.packet_count_pub = rospy.Publisher('packet_count', UInt32)
 		
         self.motor_status_pub = rospy.Publisher('motors', String)
@@ -81,9 +81,9 @@ class CrazyflieNode:
         self.yaw_pub          = rospy.Publisher('stabilizer/yaw', Float32)
  
         rospy.Subscriber('thrust', UInt16, self.set_thrust)
-		rospy.Subscriber('pitch', float, self.set_pitch)
-		rospy.Subscriber('roll', float, self.set_roll)
-		rospy.Subscriber('yaw', float, self.set_yaw)
+        rospy.Subscriber('pitch', float, self.set_pitch)
+        rospy.Subscriber('roll', float, self.set_roll)
+        rospy.Subscriber('yaw', float, self.set_yaw)
 
         # Connection callbacks
         #TODO: for a lot of these, we just update the status and/or publish a value
@@ -98,7 +98,7 @@ class CrazyflieNode:
 
         # Link quality callbacks
         self.crazyflie.linkQuality.add_callback(self.linkQuality)
-		self.crazyflie.batteryStatus.add_callback(self.batteryStatus)
+        self.crazyflie.batteryStatus.add_callback(self.batteryStatus)
         self.crazyflie.receivedPacket.add_callback(self.receivedPacket)
         
         #TODO: should be configurable, and support multiple devices
@@ -163,11 +163,11 @@ class CrazyflieNode:
 
 		# Log barometer
         baro_log_conf = LogConfig("Baro", 200)
-		baro_log_conf.addVariable(LogVariable("baro.aslLong", "float"))
+        baro_log_conf.addVariable(LogVariable("baro.aslLong", "float"))
 
         # Now that the connection is established, start logging
         self.baro_log = self.crazyflie.log.create_log_packet(baro_log_conf)
-         if self.baro_log is not None:
+        if self.baro_log is not None:
             self.baro_log.dataReceived.add_callback(self.log_baro_data)
             self.baro_log.start()
         else:
@@ -190,11 +190,11 @@ class CrazyflieNode:
 
 		# Log altimeter
         alti_log_conf = LogConfig("Alti", 200)
-		alti_log_conf.addVariable(LogVariable("alti.aslLong", "float"))
+        alti_log_conf.addVariable(LogVariable("alti.aslLong", "float"))
 
         # Now that the connection is established, start logging
         self.alti_log = self.crazyflie.log.create_log_packet(alti_log_conf)
-         if self.alti_log is not None:
+        if self.alti_log is not None:
             self.alti_log.dataReceived.add_callback(self.log_alti_data)
             self.alti_log.start()
         else:
@@ -250,8 +250,8 @@ class CrazyflieNode:
  
     def linkQuality(self, percentage):
         self.link_quality = percentage
-	
-	def batteryStatus(self, percentage):
+
+    def batteryStatus(self, percentage):
         self.battery_status = percentage
 
     def receivedPacket(self, pk):
@@ -261,19 +261,19 @@ class CrazyflieNode:
         rospy.loginfo("Accelerometer: x=%.2f, y=%.2f, z=%.2f" %
                         (data["acc.x"], data["acc.y"], data["acc.z"]))
 
-	def log_gyro_data(self, data):
+    def log_gyro_data(self, data):
         rospy.loginfo("Gyrometer: x=%.2f, y=%.2f, z=%.2f" %
                         (data["gyro.x"], data["gyro.y"], data["gyro.z"]))
 
-	def log_magneto_data(self, data):
+    def log_magneto_data(self, data):
         rospy.loginfo("Magnetometer: x=%.2f, y=%.2f, z=%.2f" %
                         (data["magneto.x"], data["magneto.y"], data["magneto.z"]))
 
-	def log_baro_data(self, data):
+    def log_baro_data(self, data):
         rospy.loginfo("Barometer: aslLong=%.2f" %
                         (data["baro.aslLong"]))
 
-	def log_alti_data(self, data):
+    def log_alti_data(self, data):
         rospy.loginfo("Altimeter: aslLong=%.2f" %
                         (data["alti.aslLong"]))
 
@@ -291,22 +291,22 @@ class CrazyflieNode:
         rospy.loginfo(rospy.get_name() + ": Setting thrust to: %d" % data.data)
         self.cmd_thrust = data.data
 
-	def set_pitch(self, data):
+    def set_pitch(self, data):
         rospy.loginfo(rospy.get_name() + ": Setting pitch to: %d" % data.data)
         self.cmd_pitch = data.data
 
-	def set_roll(self, data):
+    def set_roll(self, data):
         rospy.loginfo(rospy.get_name() + ": Setting roll to: %d" % data.data)
         self.cmd_roll = data.data
 
-	def set_yaw(self, data):
+    def set_yaw(self, data):
         rospy.loginfo(rospy.get_name() + ": Setting yaw to: %d" % data.data)
         self.cmd_yaw = data.data
 
     def run_node(self):
         self.link_quality_pub.publish(self.link_quality)
         self.packet_count_pub.publish(self.packetsSinceConnection)
-		self.battery_status_pub.publish(self.battery_status)
+        self.battery_status_pub.publish(self.battery_status)
         self.motor_status_pub.publish(self.motor_status)
         self.pitch_pub.publish(self.pitch)
         self.roll_pub.publish(self.roll)
