@@ -104,6 +104,26 @@ class CrazyflieNode:
         #TODO: should be configurable, and support multiple devices
         self.crazyflie.open_link("radio://0/10/250K")
  
+		#TODO: Test Start 
+	def start(self):
+        thrust_mult = 1
+        thrust_step = 500
+		thrust = 20000
+        pitch = 0
+        roll = 0
+        yawrate = 0
+        while thrust >= 20000:
+	    self.crazyflie.commander.send_setpoint(roll, pitch, yawrate, thrust)
+            time.sleep(0.1)
+            if (thrust >= 25000):
+                thrust_mult = -1
+            thrust = thrust + (thrust_step * thrust_mult)
+        self.crazyflie.commander.send_setpoint(0,0,0,0)
+        # Make sure that the last packet leaves before the link is closed
+        # since the message queue is not flushed before closing
+	    time.sleep(0.1)
+        self.crazyflie.close_link()
+
     def shut_down(self):
         try:
             self.pitch_log.stop()
