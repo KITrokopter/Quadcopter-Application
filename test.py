@@ -15,21 +15,6 @@ INITIAL_PITCH = 0.0
 INITIAL_YAWRATE = 0
 INITIAL_THRUST = 10001
 
-class _Getch:
-    def __init__(self):
-        import tty, sys
-
-    def __call__(self):
-        import sys, tty, termios
-        fd = sys.stdin.fileno()
-        old_settings = termios.tcgetattr(fd)
-        try:
-            tty.setraw(sys.stdin.fileno())
-            ch = sys.stdin.read(1)
-        finally:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-        return ch
-
 class CrazyDemo(object):
     def __init__(self):
         self.point = {'roll': INITIAL_ROLL,
@@ -46,21 +31,25 @@ class CrazyDemo(object):
         self.sp = SendPoints(self.cf, self.stopevent, self.point)
 
     def start(self):
+	import sys
         range = 350
-        factor = 50
+        factor = 1000
         current = INITIAL_THRUST
         self.sp.start()
-        for i in xrange(range):
+        #for i in xrange(range):
             # self.point['thrust'] = 0
-            self.point['thrust'] = INITIAL_THRUST + (factor * i)
-            time.sleep(0.01)
+            #self.point['thrust'] = INITIAL_THRUST + (factor * i)
+            #time.sleep(0.01)
         while 1:
-            getch = _Getch()
-            if getch == "u"
-                self.point['thrust'] = current + factor
-            else
-                self.point['thrust'] = current - factor
-            time.sleep(0.05)
+            	ch = sys.stdin.read(1);    
+		if ch == "u":
+                	self.point['thrust'] = self.point['thrust'] + factor
+			print "key"
+        	elif ch == "e":
+			self.stop();
+		elif ch == "d":
+                	self.point['thrust'] = self.point['thrust'] - factor
+        time.sleep(0.05)
 
         max = self.point['thrust']
         for i in xrange(range):
@@ -87,8 +76,9 @@ class CrazyDemo(object):
         self.stabilizerlog.stop()
 
     def stabilizer_data(self, data):
-        print 'roll', data['stabilizer.roll']
-        print 'pitch', data['stabilizer.pitch']
+        #print 'roll', data['stabilizer.roll']
+        #print 'pitch', data['stabilizer.pitch']
+	print "hello"	
 
     def stop(self):
         print 'closing link'
@@ -109,7 +99,7 @@ class SendPoints(threading.Thread):
     def run(self):
         logger.debug("sendpoints thread started")
         while not self.stopevent.is_set():
-            print self.point
+            #print self.point
             self.cf.commander.send_setpoint(self.point['roll'],
                                             self.point['pitch'],
                                             self.point['yawrate'],
