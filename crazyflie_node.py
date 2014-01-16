@@ -111,7 +111,7 @@ class CrazyflieNode:
         roll = 0
         yawrate = 0
         while thrust >= 20000:
-        self.crazyflie.commander.send_setpoint(roll, pitch, yawrate, thrust)
+            self.crazyflie.commander.send_setpoint(roll, pitch, yawrate, thrust)
             time.sleep(0.1)
             if (thrust >= 25000):
                 thrust_mult = -1

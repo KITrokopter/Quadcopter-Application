@@ -15,6 +15,20 @@ INITIAL_PITCH = 0.0
 INITIAL_YAWRATE = 0
 INITIAL_THRUST = 10001
 
+class _Getch:
+    def __init__(self):
+        import tty, sys
+
+    def __call__(self):
+        import sys, tty, termios
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setraw(sys.stdin.fileno())
+            ch = sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        return ch
 
 class CrazyDemo(object):
     def __init__(self):
@@ -33,16 +47,25 @@ class CrazyDemo(object):
 
     def start(self):
         range = 350
-        factor = 90
+        factor = 50
+        current = INITIAL_THRUST
         self.sp.start()
         for i in xrange(range):
             # self.point['thrust'] = 0
             self.point['thrust'] = INITIAL_THRUST + (factor * i)
             time.sleep(0.01)
+        while 1:
+            getch = _Getch()
+            if getch == "u"
+                self.point['thrust'] = current + factor
+            else
+                self.point['thrust'] = current - factor
+            time.sleep(0.05)
+
         max = self.point['thrust']
         for i in xrange(range):
             self.point['thrust'] = max - (factor * i)
-            time.sleep(0.04)
+            time.sleep(0.02)
 
     def connected(self, link_uri):
         print 'crazyflie setup complete %s' % link_uri
