@@ -44,7 +44,7 @@ class CrazyflieNode:
         """
         Connect to Crazyflie, initialize drivers and set up callback.
  
-        The callback takes care of logging the accelerometer values.
+        The callback takes care of logging the accelerometer, altimeter, barometer, gyrometer and magnetometer values.
         """
         
         self.link_status = "Unknown"
@@ -242,6 +242,7 @@ class CrazyflieNode:
         log_conf.addVariable(LogVariable("stabilizer.roll", "float"))
         log_conf.addVariable(LogVariable("stabilizer.thrust", "int32_t"))
         log_conf.addVariable(LogVariable("stabilizer.yaw", "float"))
+		#TODO Why pitch_log?
         self.pitch_log = self.crazyflie.log.create_log_packet(log_conf)
  
         if self.pitch_log is not None:
@@ -271,6 +272,7 @@ class CrazyflieNode:
     def linkQuality(self, percentage):
         self.link_quality = percentage
 
+	#TODO Check
     def batteryStatus(self, percentage):
         self.battery_status = percentage
 
