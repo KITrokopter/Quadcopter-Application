@@ -31,7 +31,7 @@ class CrazyDemo(object):
         self.sp = SendPoints(self.cf, self.stopevent, self.point)
 
     def start(self):
-	import sys
+        import sys
         range = 350
         factor = 1000
         current = INITIAL_THRUST
@@ -40,21 +40,23 @@ class CrazyDemo(object):
             # self.point['thrust'] = 0
             #self.point['thrust'] = INITIAL_THRUST + (factor * i)
             #time.sleep(0.01)
+        self.point['thrust'] = self.point['thrust'] + 20000
         while 1:
-            	ch = sys.stdin.read(1);    
-		if ch == "u":
-                	self.point['thrust'] = self.point['thrust'] + factor
-			print "key"
-        	elif ch == "e":
-			self.stop();
-		elif ch == "d":
-                	self.point['thrust'] = self.point['thrust'] - factor
-        time.sleep(0.05)
-
-        max = self.point['thrust']
-        for i in xrange(range):
-            self.point['thrust'] = max - (factor * i)
-            time.sleep(0.02)
+            ch = sys.stdin.read(1)    
+            if ch == "u":
+                self.point['thrust'] = self.point['thrust'] + factor
+            elif ch == "e":
+                self.point['thrust'] = self.point['thrust'] - (3*factor)
+                time.sleep(0.5)
+                self.point['thrust'] = self.point['thrust'] - (3*factor)
+                time.sleep(0.5)
+                self.point['thrust'] = self.point['thrust'] - (3*factor)
+                time.sleep(0.5)
+                self.stop();
+            elif ch == "d":
+                self.point['thrust'] = self.point['thrust'] - factor
+            print self.point
+            time.sleep(0.05)
 
     def connected(self, link_uri):
         print 'crazyflie setup complete %s' % link_uri
