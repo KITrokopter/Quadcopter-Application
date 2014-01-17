@@ -21,7 +21,7 @@ class CrazyDemo(object):
         factor = 1000
         thrust = INITIAL_THRUST
 	pub = rospy.Publisher('thrust', UInt16)
-	rospy.init_node('crazyflie')
+	rospy.init_node('crazyflie_sender')
         thrust = thrust + 20000
         while not rospy.is_shutdown():
             ch = sys.stdin.read(1)    
