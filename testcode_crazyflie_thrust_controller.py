@@ -29,7 +29,6 @@ class CrazyDemo(object):
                 thrust = thrust + factor
             elif ch == "e":
                 thrust = 0
-                self.stop();
             elif ch == "d":
                 thrust = thrust - factor
             rospy.loginfo(str)
