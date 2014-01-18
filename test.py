@@ -25,7 +25,7 @@ class CrazyDemo(object):
         self.cf = crazyflie.Crazyflie()
         self.cf.connectSetupFinished.add_callback(self.connected)
         self.cf.disconnected.add_callback(self.disconnected)
-        self.cf.open_link("radio://0/10/250K")
+        self.cf.open_link("radio://0/11/250K")
         # self.cf.open_link("debug://0/0")
         self.stopevent = threading.Event()
         self.sp = SendPoints(self.cf, self.stopevent, self.point)
