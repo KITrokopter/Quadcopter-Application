@@ -193,17 +193,17 @@ class CrazyflieNode:
 
         # Set magnetometer logging config 
         #TODO: check functionality
-        magneto_log_conf = LogConfig("Magneto", 10)
-        magneto_log_conf.addVariable(LogVariable("magneto.x", "float"))
-        magneto_log_conf.addVariable(LogVariable("magneto.y", "float"))
-        magneto_log_conf.addVariable(LogVariable("magneto.z", "float"))
+        mag_log_conf = LogConfig("Magneto", 10)
+        mag_log_conf.addVariable(LogVariable("mag.x", "float"))
+        mag_log_conf.addVariable(LogVariable("mag.y", "float"))
+        mag_log_conf.addVariable(LogVariable("mag.z", "float"))
  
         # Now that the connection is established, start logging
-        self.magneto_log = self.crazyflie.log.create_log_packet(magneto_log_conf)
+        self.mag_log = self.crazyflie.log.create_log_packet(mag_log_conf)
  
-        if self.magneto_log is not None:
-            self.magneto_log.dataReceived.add_callback(self.log_magneto_data)
-            self.magneto_log.start()
+        if self.mag_log is not None:
+            self.mag_log.dataReceived.add_callback(self.log_mag_data)
+            self.mag_log.start()
         else:
             print("magneto.x/y/z not found in log TOC")
 
@@ -287,9 +287,9 @@ class CrazyflieNode:
         rospy.loginfo("Gyrometer: x=%.2f, y=%.2f, z=%.2f" %
                         (data["gyro.x"], data["gyro.y"], data["gyro.z"]))
 
-    def log_magneto_data(self, data):
+    def log_mag_data(self, data):
         rospy.loginfo("Magnetometer: x=%.2f, y=%.2f, z=%.2f" %
-                        (data["magneto.x"], data["magneto.y"], data["magneto.z"]))
+                        (data["mag.x"], data["mag.y"], data["mag.z"]))
 
     def log_baro_data(self, data):
         rospy.loginfo("Barometer: aslLong=%.2f" %
