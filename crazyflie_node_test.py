@@ -22,19 +22,50 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import rospy
 import logging
+import rospy
+import threading
+import time
  
 import cflib.crtp
 from cfclient.utils.logconfigreader import LogConfig
 from cfclient.utils.logconfigreader import LogVariable
 from cflib.crazyflie import Crazyflie
+#from cflib import crazyflie
 from std_msgs.msg import UInt16
 from std_msgs.msg import UInt32
 from std_msgs.msg import Float32
 from std_msgs.msg import String
  
 logging.basicConfig(level=logging.DEBUG)
+
+class CrazyflieURI:
+    def __init__(self):
+        self.uri_list = []
+        self.amount = 0
+
+    def add(self, uri, name):
+        self.amount += 1
+        self.uri_list.append(uri)
+        self.uri_list.append(name)
+    
+    def find_all(self):
+        print("start")
+        cflib.crtp.init_drivers()
+        available = cflib.crtp.scan_interfaces()
+        for i in available:
+            self.add(i[0], i[1])
+            print "InterfacewithURI [%s] found, name [%s]" % (i[0],i[1])
+        print("end") 
+
+    def find_add_all(self):
+        pass
+
+    def print_all(self):
+        print "start print_all"
+        for i in xrange(self.amount):
+            print "Found: [%s]" % (self.uri_list[i])
+        print "end"
 
 class CrazyflieNode:
     """
@@ -46,7 +77,6 @@ class CrazyflieNode:
  
         The callback takes care of logging the accelerometer values.
         """
-        
         self.link_status = "Unknown"
         self.link_quality = 0.0
         self.packetsSinceConnection = 0
@@ -61,6 +91,11 @@ class CrazyflieNode:
         self.cmd_roll = 0.0
         self.cmd_yaw = 0.0
         
+        # Array for storing found URIs
+        self.uri_list = CrazyflieURI()
+        self.uri_list.find_all()
+        self.uri_list.print_all()
+
         # Init the callbacks for the crazyflie lib
         self.crazyflie = Crazyflie()
         cflib.crtp.init_drivers()
@@ -102,7 +137,14 @@ class CrazyflieNode:
         
         #TODO: should be configurable, and support multiple devices
         self.crazyflie.open_link("radio://0/10/250K")
- 
+
+    def find_crazyflies(self):
+        print("start")
+        available = cflib.crtp.scan_interfaces()
+        for i in available:
+                print "InterfacewithURI [%s] found, name [%s]" % (i[0],i[1])
+        print("end") 
+
     def shut_down(self):
         try:
             self.pitch_log.stop()
