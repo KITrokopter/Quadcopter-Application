@@ -67,6 +67,7 @@ class CrazyflieNode:
         cflib.crtp.init_drivers()
 
         # Init the published topics for ROS, for this class
+		# TODO Change names in Publisher() according to Netzwerkprotokol
         self.link_status_pub  = rospy.Publisher('link_status', String, latch=True)
         self.link_quality_pub = rospy.Publisher('link_quality', Float32)
         #TODO: check following line
@@ -80,11 +81,12 @@ class CrazyflieNode:
         # Changed Float32 to UInt16 (Carina)#
         self.thrust_pub       = rospy.Publisher('stabilizer/thrust', UInt16)
         self.yaw_pub          = rospy.Publisher('stabilizer/yaw', Float32)
- 
+ 		#Change names in Subscriber according to topics
         rospy.Subscriber('thrust', UInt16, self.set_thrust)
         rospy.Subscriber('pitch', float, self.set_pitch)
         rospy.Subscriber('roll', float, self.set_roll)
         rospy.Subscriber('yaw', float, self.set_yaw)
+		rospy.spin();
 
         # Connection callbacks
         self.crazyflie.connectionInitiated.add_callback(self.connectionInitiated)
