@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 #TODO: Delete unused imports
-#TODO: Comment
 import logging
 import rospy
 import threading
@@ -10,7 +9,6 @@ import cflib.crtp
 from cfclient.utils.logconfigreader import LogConfig
 from cfclient.utils.logconfigreader import LogVariable
 from cflib.crazyflie import Crazyflie
-#from cflib import crazyflie
 from std_msgs.msg import UInt16
 from std_msgs.msg import UInt32
 from std_msgs.msg import Float32
@@ -63,7 +61,19 @@ class CrazyflieURI:
         available = cflib.crtp.scan_interfaces()
         for i in available:
             print "InterfacewithURI [%s] found, name [%s]" % (i[0],i[1])
-            self.add_uri(i[0], i[1])
+            ch = sys.stdin.read(1)
+            if ch == "b":
+                self.crazyflie.open_link(i[0])
+                #TODO: Add blink-method, extra class?
+                self.crazyflie.close_link()
+            elif ch == "y":
+                self.add_uri(i[0])
+                print"Added [%s]" % (i[0])
+            else:
+                print "Not added"
+
+        if self.amount is 0:
+            print "No link found"
         print("end") 
 
     def find_add_all(self):
