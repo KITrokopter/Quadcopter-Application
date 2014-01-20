@@ -17,25 +17,24 @@ class CrazyDemo(object):
 
     def start(self):
         import sys
-        range = 350
         factor = 1000
         thrust = INITIAL_THRUST
-	pub = rospy.Publisher('thrust', UInt16)
-	rospy.init_node('crazyflie_sender')
-        thrust = thrust + 20000
+        pub = rospy.Publisher('thrust', UInt16)
+        rospy.init_node('crazyflie_sender')
+
         while not rospy.is_shutdown():
             ch = sys.stdin.read(1)    
             if ch == "u":
                 thrust = thrust + factor
-            elif ch == "e":
-                thrust = 0
             elif ch == "d":
                 thrust = thrust - factor
+            elif ch == "e":
+                thrust = 0
+            else:
+                thrust = thrust;
             rospy.loginfo(str)
-	    pub.publish(thrust)
-	    rospy.sleep(0.05)
-
-
+            pub.publish(thrust)
+            rospy.sleep(0.05)
 
 c = CrazyDemo()
 c.start()
