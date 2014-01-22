@@ -40,7 +40,7 @@ class CrazyDemo(object):
             # self.point['thrust'] = 0
             #self.point['thrust'] = INITIAL_THRUST + (factor * i)
             #time.sleep(0.01)
-        self.point['thrust'] = self.point['thrust'] + 20000
+        self.point['thrust'] = self.point['thrust'] 
         while 1:
             ch = sys.stdin.read(1)    
             if ch == "u":
