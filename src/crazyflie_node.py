@@ -56,7 +56,6 @@ class CrazyflieNode:
         self.roll = 0.0
         self.thrust = 0
         self.yaw = 0.0
-
         self.cmd_thrust = 0
         self.cmd_pitch = 0.0
         self.cmd_roll = 0.0
@@ -65,29 +64,7 @@ class CrazyflieNode:
         # Init the callbacks for the crazyflie lib
         self.crazyflie = Crazyflie()
         cflib.crtp.init_drivers()
-
-        # Init the published topics for ROS, for this class
-		# TODO Change names in Publisher() according to Netzwerkprotokol
-        self.link_status_pub  = rospy.Publisher('link_status', String, latch=True)
-        self.link_quality_pub = rospy.Publisher('link_quality', Float32)
-        #TODO: check following line
-        self.battery_status_pub = rospy.Publisher('battery_status', Float32)
-        self.packet_count_pub = rospy.Publisher('packet_count', UInt32)
-        
-        self.motor_status_pub = rospy.Publisher('motors', String)
-
-        self.pitch_pub        = rospy.Publisher('stabilizer/pitch', Float32)
-        self.roll_pub         = rospy.Publisher('stabilizer/roll', Float32)
-        # Changed Float32 to UInt16 (Carina)#
-        self.thrust_pub       = rospy.Publisher('stabilizer/thrust', UInt16)
-        self.yaw_pub          = rospy.Publisher('stabilizer/yaw', Float32)
- 		#Change names in Subscriber according to topics
-        rospy.Subscriber('thrust', UInt16, self.set_thrust)
-        rospy.Subscriber('pitch', float, self.set_pitch)
-        rospy.Subscriber('roll', float, self.set_roll)
-        rospy.Subscriber('yaw', float, self.set_yaw)
-		rospy.spin();
-
+ 	
         # Connection callbacks
         self.crazyflie.connectionInitiated.add_callback(self.connectionInitiated)
         self.crazyflie.connectSetupFinished.add_callback(self.connectSetupFinished)
@@ -132,12 +109,10 @@ class CrazyflieNode:
 
     def connectionInitiated(self, linkURI):
         self.link_status = "Connection Initiated"
-        self.link_status_pub.publish(self.link_status)
 
     def connectSetupFinished(self, linkURI):
         
         self.link_status = "Connect Setup Finished"
-        self.link_status_pub.publish(self.link_status)
         
         self.setupStabilizerLog()
 
@@ -257,19 +232,15 @@ class CrazyflieNode:
     def connected(self, linkURI):
         self.packetsSinceConnection = 0
         self.link_status = "Connected"
-        self.link_status_pub.publish(self.link_status)
 
     def disconnected(self, linkURI):
         self.link_status = "Disconnected"
-        self.link_status_pub.publish(self.link_status)
      
     def connectionLost(self, linkURI, errmsg):
         self.link_status = "Connection Lost - " + errmsg
-        self.link_status_pub.publish(self.link_status)
  
     def connectionFailed(self, linkURI, errmsg):
         self.link_status = "Connection Failed - " + errmsg
-        self.link_status_pub.publish(self.link_status)
  
     def linkQuality(self, percentage):
         self.link_quality = percentage
@@ -311,49 +282,52 @@ class CrazyflieNode:
         self.thrust = data["stabilizer.thrust"]
         self.yaw    = data["stabilizer.yaw"]
 
-    def set_thrust(self, data):
-        rospy.loginfo(rospy.get_name() + ": Setting thrust to: %d" % data.data)
-        self.cmd_thrust = data.data
+   
+	def movement_callback(data):
+   		rospy.loginfo(rospy.get_name() + ": I heard %s" % data.data)
+		self.cmd_thrust = data.thrust
+		self.cmd_pitch = data.pitch
+		self.cmd_yaw = data.yaw
+		self.cmd_roll = data.roll
 
-    def set_pitch(self, data):
-        rospy.loginfo(rospy.get_name() + ": Setting pitch to: %d" % data.data)
-        self.cmd_pitch = data.data
-
-    def set_roll(self, data):
-        rospy.loginfo(rospy.get_name() + ": Setting roll to: %d" % data.data)
-        self.cmd_roll = data.data
-
-    def set_yaw(self, data):
-        rospy.loginfo(rospy.get_name() + ": Setting yaw to: %d" % data.data)
-        self.cmd_yaw = data.data
-
-    def run_node(self):
-        self.link_quality_pub.publish(self.link_quality)
-        self.packet_count_pub.publish(self.packetsSinceConnection)
-        self.battery_status_pub.publish(self.battery_status)
-        self.motor_status_pub.publish(self.motor_status)
-        self.pitch_pub.publish(self.pitch)
-        self.roll_pub.publish(self.roll)
-        self.thrust_pub.publish(self.thrust)
-        self.yaw_pub.publish(self.yaw)
-        
-        # Send commands to the Crazyflie
-#rospy.loginfo(rospy.get_name() + ": Sending setpoint: %f, %f, %f, %d" % (self.cmd_roll, self.cmd_pitch, self.cmd_yaw, self.cmd_thrust))
-        self.crazyflie.commander.send_setpoint(self.cmd_roll, self.cmd_pitch, self.cmd_yaw, self.cmd_thrust)
-         
-def run():
-    #TODO: understand the following comment
-    # Init the ROS node here, so we can split functionality
-    # for this node across multiple classes        
-    rospy.init_node('crazyflie')
-
-    #TODO: organize this into several classes that monitor/control one specific thing
-    node = CrazyflieNode()
+          
+def talker():
+	pub_QuadStatus = rospy.Publisher('QuadStatus', quadcopter_application.QuadStatus)
+	rospy.init_node('quad_talker')
+	node = CrazyflieNode()
     while not rospy.is_shutdown():
-        node.run_node()
-        rospy.sleep(0.1)
-    node.shut_down()
-        
+		#TODO Globale Variablen? ID?
+     	quad_msg.linkQuality = self.link_quality
+		quad_msg.batteryStatus = self.battery_status
+		quad_msg.accX = self.log_accel_data["acc.x"]
+		quad_msg.accY = self.log_accel_data["acc.y"]
+		quad_msg.accZ = self.log_accel_data["acc.z"]
+		quad_msg.gyroX = self.log_gyro_data["gyro.x"]
+		quad_msg.gyroY = self.log_gyro_data["gyro.y"]
+		quad_msg.gyroZ = self.log_gyro_data["gyro.y"]
+		quad_msg.magX = self.log_mag_data["mag.x"]
+		quad_msg.magY = self.log_mag_data["mag.y"]
+		quad_msg.magZ = self.log_mag_data["mag.z"]
+		quad_msg.barometer = data["baro.aslLong"]
+		quad_msg.altimeter = data["alti.aslLong"]
+		pub_QuadStatus.publish(quad_msg)
+        rospy.sleep(1.0)
+
+
+
+def listener():
+  	rospy.init_node('quad_listener', anonymous=True)
+	node = CrazyflieNode()
+    rospy.Subscriber("Movement", quadcopter_application.Movement, movement_callback)
+   	rospy.spin()
         
 if __name__ == '__main__':
-    run()
+    try:
+        talker()
+    except rospy.ROSInterruptException:
+        pass
+	listener()
+	# Send commands to the Crazyflie
+	#rospy.loginfo(rospy.get_name() + ": Sending setpoint: %f, %f, %f, %d" % (self.cmd_roll, self.cmd_pitch, self.cmd_yaw, self.cmd_thrust))
+        self.crazyflie.commander.send_setpoint(self.cmd_roll, self.cmd_pitch, self.cmd_yaw, self.cmd_thrust)
+	
