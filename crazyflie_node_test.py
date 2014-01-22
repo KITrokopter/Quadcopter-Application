@@ -118,6 +118,15 @@ class CrazyflieNode:
         for i in available:
                 print "InterfacewithURI [%s] found, name [%s]" % (i[0],i[1])
         print("end") 
+        
+    def node_blink(self, string_link):
+        rospy.wait_for_service('blink')
+        blink_service = rospy.ServiceProxy('blink', crazyflie.srv.Blink)
+        try:
+            response = blink(string_link)
+        except:
+            print("Service did not process request: " + str(exc))
+        #TODO: ...
 
     def shut_down(self):
         try:

@@ -21,6 +21,10 @@ class CrazyDemo(object):
         thrust = INITIAL_THRUST
         pub = rospy.Publisher('thrust', UInt16)
         rospy.init_node('crazyflie_sender')
+    
+        #TODO: Test of services ...
+#        rospy.wait_for_service('view_uri')
+#        view_uri = rospy.ServiceProxy('', viewU
 
         while not rospy.is_shutdown():
             ch = sys.stdin.read(1)    

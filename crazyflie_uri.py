@@ -99,4 +99,14 @@ class CrazyflieURI:
             print "[%s] : [%s]" % (i, self.uri_list[i])
         print "end"
 
+class Blink:
+    def blink(req):
+        #TODO
+
+    def blink_server():
+        rospy.init_node('blink')
+        s = rospy.Service('blink', crazyflie.srv.Blink, blink)
+        rospy.spin()
+
+
 
