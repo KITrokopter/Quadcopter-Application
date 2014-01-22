@@ -1,3 +1,0 @@
-string str
----
-uint8 error # 0 bei ok, != 0 sonst
