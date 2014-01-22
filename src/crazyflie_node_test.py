@@ -22,18 +22,23 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import rospy
 import logging
+import rospy
+import threading
+import time
  
 import cflib.crtp
 from cfclient.utils.logconfigreader import LogConfig
 from cfclient.utils.logconfigreader import LogVariable
 from cflib.crazyflie import Crazyflie
+#from cflib import crazyflie
 from std_msgs.msg import UInt16
 from std_msgs.msg import UInt32
 from std_msgs.msg import Float32
 from std_msgs.msg import String
- 
+
+from crazyflie_uri import CrazyflieURI 
+
 logging.basicConfig(level=logging.DEBUG)
 
 class CrazyflieNode:
@@ -44,12 +49,10 @@ class CrazyflieNode:
         """
         Connect to Crazyflie, initialize drivers and set up callback.
  
-        The callback takes care of logging the accelerometer, altimeter, barometer, gyrometer and magnetometer values.
+        The callback takes care of logging the accelerometer values.
         """
-        
         self.link_status = "Unknown"
         self.link_quality = 0.0
-        self.battery_status = 0.0
         self.packetsSinceConnection = 0
         self.motor_status = ""
         self.pitch = 0.0
@@ -62,33 +65,39 @@ class CrazyflieNode:
         self.cmd_roll = 0.0
         self.cmd_yaw = 0.0
         
+        # Array for storing found URIs
+        self.uri_list = CrazyflieURI()
+        self.uri_list.find_all()
+        self.uri_list.print_all()
+
         # Init the callbacks for the crazyflie lib
         self.crazyflie = Crazyflie()
         cflib.crtp.init_drivers()
 
         # Init the published topics for ROS, for this class
-		# TODO Change names in Publisher() according to Netzwerkprotokol
         self.link_status_pub  = rospy.Publisher('link_status', String, latch=True)
         self.link_quality_pub = rospy.Publisher('link_quality', Float32)
-        #TODO: check following line
-        self.battery_status_pub = rospy.Publisher('battery_status', Float32)
         self.packet_count_pub = rospy.Publisher('packet_count', UInt32)
-        
+
+        #self.battery_status_pub = rospy.Publisher('battery_status', Float32)
+        #self.packet_count_pub = rospy.Publisher('packet_count', UInt32)
+
         self.motor_status_pub = rospy.Publisher('motors', String)
 
         self.pitch_pub        = rospy.Publisher('stabilizer/pitch', Float32)
         self.roll_pub         = rospy.Publisher('stabilizer/roll', Float32)
-        # Changed Float32 to UInt16 (Carina)#
-        self.thrust_pub       = rospy.Publisher('stabilizer/thrust', UInt16)
+        self.thrust_pub       = rospy.Publisher('stabilizer/thrust', Float32)
         self.yaw_pub          = rospy.Publisher('stabilizer/yaw', Float32)
- 		#Change names in Subscriber according to topics
+ 
         rospy.Subscriber('thrust', UInt16, self.set_thrust)
-        rospy.Subscriber('pitch', float, self.set_pitch)
-        rospy.Subscriber('roll', float, self.set_roll)
-        rospy.Subscriber('yaw', float, self.set_yaw)
-		rospy.spin();
+        #rospy.Subscriber('pitch', float, self.set_pitch)
+        #rospy.Subscriber('roll', float, self.set_roll)
+        #rospy.Subscriber('yaw', float, self.set_yaw)
 
         # Connection callbacks
+        #TODO: for a lot of these, we just update the status and/or publish a value
+        # it would be sweet if we could create a generic function to do that for us,
+        # instead of using all of these callbacks.
         self.crazyflie.connectionInitiated.add_callback(self.connectionInitiated)
         self.crazyflie.connectSetupFinished.add_callback(self.connectSetupFinished)
         self.crazyflie.connected.add_callback(self.connected)
@@ -98,31 +107,17 @@ class CrazyflieNode:
 
         # Link quality callbacks
         self.crazyflie.linkQuality.add_callback(self.linkQuality)
-        self.crazyflie.batteryStatus.add_callback(self.batteryStatus)
         self.crazyflie.receivedPacket.add_callback(self.receivedPacket)
         
         #TODO: should be configurable, and support multiple devices
         self.crazyflie.open_link("radio://0/10/250K")
- 
-        #TODO: Test Start 
-    def start(self):
-        thrust_mult = 1
-        thrust_step = 500
-        thrust = 20000
-        pitch = 0
-        roll = 0
-        yawrate = 0
-        while thrust >= 20000:
-            self.crazyflie.commander.send_setpoint(roll, pitch, yawrate, thrust)
-            time.sleep(0.1)
-            if (thrust >= 25000):
-                thrust_mult = -1
-            thrust = thrust + (thrust_step * thrust_mult)
-        self.crazyflie.commander.send_setpoint(0,0,0,0)
-        # Make sure that the last packet leaves before the link is closed
-        # since the message queue is not flushed before closing
-        time.sleep(0.1)
-        self.crazyflie.close_link()
+
+    def find_crazyflies(self):
+        print("start")
+        available = cflib.crtp.scan_interfaces()
+        for i in available:
+                print "InterfacewithURI [%s] found, name [%s]" % (i[0],i[1])
+        print("end") 
 
     def shut_down(self):
         try:
@@ -166,6 +161,7 @@ class CrazyflieNode:
         else:
             print("acc.x/y/z not found in log TOC")
 
+
         # Set gyrometer logging config
         gyro_log_conf = LogConfig("Gyro", 10)
         gyro_log_conf.addVariable(LogVariable("gyro.x", "float"))
@@ -180,7 +176,6 @@ class CrazyflieNode:
             self.gyro_log.start()
         else:
             print("gyro.x/y/z not found in log TOC")
-
         # Log barometer
         baro_log_conf = LogConfig("Baro", 200)
         baro_log_conf.addVariable(LogVariable("baro.aslLong", "float"))
@@ -192,6 +187,7 @@ class CrazyflieNode:
             self.baro_log.start()
         else:
             print("baro.aslLong not found in log TOC")
+
 
         # Set magnetometer logging config 
         #TODO: check functionality
@@ -209,20 +205,6 @@ class CrazyflieNode:
         else:
             print("magneto.x/y/z not found in log TOC")
 
-        # Log altimeter
-        #TODO: check functionality
-        alti_log_conf = LogConfig("Alti", 200)
-        alti_log_conf.addVariable(LogVariable("alti.aslLong", "float"))
-
-        # Now that the connection is established, start logging
-        self.alti_log = self.crazyflie.log.create_log_packet(alti_log_conf)
-        if self.alti_log is not None:
-            self.alti_log.dataReceived.add_callback(self.log_alti_data)
-            self.alti_log.start()
-        else:
-            print("alti.aslLong not found in log TOC")
-
-        #Log motor
         motor_log_conf = LogConfig("Motor", 10)
         motor_log_conf.addVariable(LogVariable("motor.m1", "int32_t"))
         motor_log_conf.addVariable(LogVariable("motor.m2", "int32_t"))
@@ -244,7 +226,6 @@ class CrazyflieNode:
         log_conf.addVariable(LogVariable("stabilizer.roll", "float"))
         log_conf.addVariable(LogVariable("stabilizer.thrust", "int32_t"))
         log_conf.addVariable(LogVariable("stabilizer.yaw", "float"))
-		#TODO Why pitch_log?
         self.pitch_log = self.crazyflie.log.create_log_packet(log_conf)
  
         if self.pitch_log is not None:
@@ -274,10 +255,6 @@ class CrazyflieNode:
     def linkQuality(self, percentage):
         self.link_quality = percentage
 
-	#TODO Check
-    def batteryStatus(self, percentage):
-        self.battery_status = percentage
-
     def receivedPacket(self, pk):
         self.packetsSinceConnection += 1
 
@@ -297,10 +274,6 @@ class CrazyflieNode:
         rospy.loginfo("Barometer: aslLong=%.2f" %
                         (data["baro.aslLong"]))
 
-    def log_alti_data(self, data):
-        rospy.loginfo("Altimeter: aslLong=%.2f" %
-                        (data["alti.aslLong"]))
-
     def log_motor_data(self, data):
         self.motor_status = ("Motors: m1=%d, m2=%d, m3=%d, m4=%d" %
                         (data["m1"], data["m2"], data["m3"], data["m4"]))
@@ -315,22 +288,9 @@ class CrazyflieNode:
         rospy.loginfo(rospy.get_name() + ": Setting thrust to: %d" % data.data)
         self.cmd_thrust = data.data
 
-    def set_pitch(self, data):
-        rospy.loginfo(rospy.get_name() + ": Setting pitch to: %d" % data.data)
-        self.cmd_pitch = data.data
-
-    def set_roll(self, data):
-        rospy.loginfo(rospy.get_name() + ": Setting roll to: %d" % data.data)
-        self.cmd_roll = data.data
-
-    def set_yaw(self, data):
-        rospy.loginfo(rospy.get_name() + ": Setting yaw to: %d" % data.data)
-        self.cmd_yaw = data.data
-
     def run_node(self):
         self.link_quality_pub.publish(self.link_quality)
         self.packet_count_pub.publish(self.packetsSinceConnection)
-        self.battery_status_pub.publish(self.battery_status)
         self.motor_status_pub.publish(self.motor_status)
         self.pitch_pub.publish(self.pitch)
         self.roll_pub.publish(self.roll)
@@ -338,11 +298,10 @@ class CrazyflieNode:
         self.yaw_pub.publish(self.yaw)
         
         # Send commands to the Crazyflie
-#rospy.loginfo(rospy.get_name() + ": Sending setpoint: %f, %f, %f, %d" % (self.cmd_roll, self.cmd_pitch, self.cmd_yaw, self.cmd_thrust))
+#        rospy.loginfo(rospy.get_name() + ": Sending setpoint: %f, %f, %f, %d" % (self.cmd_roll, self.cmd_pitch, self.cmd_yaw, self.cmd_thrust))
         self.crazyflie.commander.send_setpoint(self.cmd_roll, self.cmd_pitch, self.cmd_yaw, self.cmd_thrust)
          
 def run():
-    #TODO: understand the following comment
     # Init the ROS node here, so we can split functionality
     # for this node across multiple classes        
     rospy.init_node('crazyflie')
@@ -357,3 +316,4 @@ def run():
         
 if __name__ == '__main__':
     run()
+
