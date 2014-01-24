@@ -128,12 +128,13 @@ class CrazyflieNode:
 
         # Link quality callbacks
         self.crazyflie.linkQuality.add_callback(self.linkQuality)
-        self.crazyflie.batteryStatus.add_callback(self.batteryStatus)
+        # TODO find correct name
+        # self.crazyflie.batteryStatus.add_callback(self.batteryStatus)
         self.crazyflie.receivedPacket.add_callback(self.receivedPacket)
         
         
         #TODO: should be configurable, and support multiple devices
-        self.crazyflie.open_link("radio://0/10/250K")
+        self.crazyflie.open_link("radio://0/11/250K")
  
         #TODO: Test Start 
     def start(self):
