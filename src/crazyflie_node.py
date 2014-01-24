@@ -159,7 +159,8 @@ class CrazyflieNode:
 
     def shut_down(self):
         try:
-            self.pitch_log.stop()
+	    print("shut down")
+            #self.pitch_log.stop()
         finally:
             self.crazyflie.close_link()
 
