@@ -237,20 +237,16 @@ class CrazyflieNode:
     def connected(self, linkURI):
         self.packetsSinceConnection = 0
         self.link_status = "Connected"
-        self.link_status_pub.publish(self.link_status)
         print("Connected") #DEBUG
 
     def disconnected(self, linkURI):
         self.link_status = "Disconnected"
-        self.link_status_pub.publish(self.link_status)
      
     def connectionLost(self, linkURI, errmsg):
         self.link_status = "Connection Lost - " + errmsg
-        self.link_status_pub.publish(self.link_status)
  
     def connectionFailed(self, linkURI, errmsg):
         self.link_status = "Connection Failed - " + errmsg
-        self.link_status_pub.publish(self.link_status)
  
     def linkQuality(self, percentage):
         self.link_quality = percentage
