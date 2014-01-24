@@ -116,7 +116,6 @@ class CrazyflieNode:
         self.publisher  = rospy.Publisher('quadcopter_status_' + str(self.id), quadcopter_status, latch=True)
 
         rospy.Subscriber('quadcopter_controll_' + str(self.id), quadcopter_controll, self.set_controll)
-	rospy.spin();
 
 	# TODO Which callbacks are still needed?
         # Connection callbacks
@@ -136,7 +135,7 @@ class CrazyflieNode:
         
         #TODO: should be configurable, and support multiple devices
         self.crazyflie.open_link("radio://0/11/250K")
- 
+
         #TODO: Test Start 
     def start(self):
         thrust_mult = 1
@@ -288,9 +287,10 @@ def run():
     # Init the ROS node here, so we can split functionality
     # for this node across multiple classes        
     rospy.init_node('crazyflie')
-
+    print("ros node initialized")
     #TODO: organize this into several classes that monitor/control one specific thing
     node = CrazyflieNode()
+    print("cf node initialized")
     while not rospy.is_shutdown():
         node.run_node()
         rospy.sleep(0.1)
