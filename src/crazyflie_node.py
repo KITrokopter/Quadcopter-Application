@@ -43,25 +43,25 @@ class LogVar(object):
     self.vartype = vartype
 
 LOGVARS = [
-    LogVar('URI', 16),
-    LogVar('ROLL', 10, 'stabilizer.roll'),
-    LogVar('PITCH', 10, 'stabilizer.pitch'),
-    LogVar('YAW', 10, 'stabilizer.yaw'),
+    LogVar('URI', 50),
+    LogVar('ROLL', 10, 'stabilizer.roll', 'float'),
+    LogVar('PITCH', 10, 'stabilizer.pitch', 'float'),
+    LogVar('YAW', 10, 'stabilizer.yaw', 'float'),
     LogVar('THRUST', 10, 'stabilizer.thrust', 'uint16_t'),
     LogVar('PRESSURE', 10, 'altimeter.pressure'),
-    LogVar('MAG_X', 6, 'mag.x', 'int16_t'),
-    LogVar('MAG_Y', 6, 'mag.y', 'int16_t'),
-    LogVar('MAG_Z', 6, 'mag.z', 'int16_t'),
-    LogVar('ACC_X', 6, 'acc.x', 'float'),
-    LogVar('ACC_Y', 6, 'acc.y', 'float'),
-    LogVar('ACC_Z', 6, 'acc.z', 'float'),
-    LogVar('GYRO_X', 6, 'gyro.x', 'float'),
-    LogVar('GYRO_Y', 6, 'gyro.y', 'float'),
-    LogVar('GYRO_Z', 6, 'gyro.z', 'float'),
-    LogVar('MOTOR_M1', 6, 'motor.m1', 'uint16_t'),
-    LogVar('MOTOR_M2', 6, 'motor.m2', 'uint16_t'),
-    LogVar('MOTOR_M3', 6, 'motor.m3', 'uint16_t'),
-    LogVar('MOTOR_M4', 6, 'motor.m4', 'uint16_t'),
+    LogVar('MAG_X', 10, 'mag.x', 'int16_t'),
+    LogVar('MAG_Y', 10, 'mag.y', 'int16_t'),
+    LogVar('MAG_Z', 10, 'mag.z', 'int16_t'),
+    LogVar('ACC_X', 10, 'acc.x', 'float'),
+    LogVar('ACC_Y', 10, 'acc.y', 'float'),
+    LogVar('ACC_Z', 10, 'acc.z', 'float'),
+    LogVar('GYRO_X', 10, 'gyro.x', 'float'),
+    LogVar('GYRO_Y', 10, 'gyro.y', 'float'),
+    LogVar('GYRO_Z', 10, 'gyro.z', 'float'),
+    LogVar('MOTOR_M1', 15, 'motor.m1', 'uint16_t'),
+    LogVar('MOTOR_M2', 15, 'motor.m2', 'uint16_t'),
+    LogVar('MOTOR_M3', 15, 'motor.m3', 'uint16_t'),
+    LogVar('MOTOR_M4', 15, 'motor.m4', 'uint16_t'),
     LogVar('AUTO', 10)
 ]
 
@@ -83,6 +83,10 @@ class CrazyflieNode:
         self.battery_status = 0.0
         self.packetsSinceConnection = 0
         
+        self.roll = 0.0
+        self.pitch = 0.0
+        self.yaw = 0.0
+        
         self.motor_m1 = 0
         self.motor_m2 = 0
         self.motor_m3 = 0
@@ -101,6 +105,8 @@ class CrazyflieNode:
         self.acc_x = 0.0
         self.acc_y = 0.0
         self.acc_z = 0.0
+        
+        self.roll = 
         
         self.cmd_thrust = 0
         self.cmd_pitch = 0.0
@@ -205,6 +211,10 @@ class CrazyflieNode:
 	self.mag_x = data['mag.x']
 	self.mag_y = data['mag.y']
 	self.mag_z = data['mag.z']
+	
+	self.roll = data['stabilizer.roll']
+	self.pitch = data['stabilizer.pitch']
+	self.yaw = data['stabilizer.yaw']
 	
 	self.acc_x = data['acc.x']
 	self.acc_y = data['acc.y']
