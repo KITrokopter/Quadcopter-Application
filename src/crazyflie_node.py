@@ -36,7 +36,7 @@ from quadcopter_application.msg import quadcopter_controll
 logging.basicConfig(level=logging.DEBUG)
 
 class LogVar(object):
-  def __init__(self, label, width, var=None, vartype='float'):
+  def __init__(self, var, vartype='float'):
     self.var = var
     self.vartype = vartype
 
