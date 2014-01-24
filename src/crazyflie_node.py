@@ -254,7 +254,7 @@ class CrazyflieNode:
         self.yaw    = data["stabilizer.yaw"]
 
     def set_controll(self, data):
-        rospy.loginfo(rospy.get_name() + ": Setting thrust to: %d" % data.["thrust"])
+        rospy.loginfo(rospy.get_name() + ": Setting thrust to: %d" % data["thrust"])
         self.cmd_thrust = data.["thrust"]
 
     def run_node(self):
