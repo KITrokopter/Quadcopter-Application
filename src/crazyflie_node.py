@@ -255,7 +255,7 @@ class CrazyflieNode:
 
     def set_controll(self, data):
         rospy.loginfo(rospy.get_name() + ": Setting thrust to: %d" % data["thrust"])
-        self.cmd_thrust = data.["thrust"]
+        self.cmd_thrust = data["thrust"]
 
     def run_node(self):
         self.publisher.publish(self.id, self.battery_status, self.link_quality, self.altimeter,
