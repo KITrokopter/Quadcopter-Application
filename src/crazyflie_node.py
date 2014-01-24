@@ -184,14 +184,14 @@ class CrazyflieNode:
         logconf = LogConfig('Logging', 10)
 	for f in LOGVARS:
 	    logconf.addVariable(logconfigreader.LogVariable(f.var, f.vartype))
-	    logpacket = self._cf.log.create_log_packet(logconf)
+	    logpacket = self.crazyflie.log.create_log_packet(logconf)
 	if not logpacket:
 	    logger.error('Failed to create log packet')
 	    return
-	logpacket.dataReceived.add_callback(self._onLogData)
+	logpacket.dataReceived.add_callback(self.onLogData)
 	logpacket.start()
  
-    def _onLogData(self, data):
+    def onLogData(self, data):
 	print("got data from cf")
 	# DEBUG
         rospy.loginfo("Accelerometer: x=%.2f, y=%.2f, z=%.2f" %
@@ -254,7 +254,6 @@ class CrazyflieNode:
         self.cmd_thrust = data.thrust
 
     def run_node(self):
-	print("sending")
         self.publisher.publish(self.id, self.battery_status, self.link_quality, self.altimeter,
 			       self.mag_x, self.mag_y, self.mag_z,
 			       self.gyro_x, self.gyro_y, self.gyro_z,
