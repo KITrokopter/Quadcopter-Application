@@ -183,6 +183,7 @@ class CrazyflieNode:
         it receives data, which prints the data from the logging packet's
         data dictionary as logging info.
         """
+        print("started logs")
         logconf = logconfigreader.LogConfig('Logging', period=100)
 	logconf = logconfigreader.LogConfig('Logging', period=100)
 	for f in [f for f in FIELDS if f.var is not None]:
@@ -195,6 +196,7 @@ class CrazyflieNode:
 	logpacket.start()
  
     def _onLogData(self, data):
+	print("got data from cf")
 	# DEBUG
         rospy.loginfo("Accelerometer: x=%.2f, y=%.2f, z=%.2f" %
                         (data["acc.x"], data["acc.y"], data["acc.z"]))
