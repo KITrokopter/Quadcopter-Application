@@ -4,7 +4,7 @@ import time
 import threading
 import logging
 
-from std_msgs.msg import UInt16
+from quadcopter_application.msg import quadcopter_status
 
 logger = logging.getLogger()
 
@@ -19,7 +19,7 @@ class CrazyDemo(object):
         import sys
         factor = 1000
         thrust = INITIAL_THRUST
-        pub = rospy.Publisher('thrust', UInt16)
+        pub = rospy.Publisher('quadcopter_controll_0', quadcopter_status)
         rospy.init_node('crazyflie_sender')
 
         while not rospy.is_shutdown():
@@ -33,7 +33,7 @@ class CrazyDemo(object):
             else:
                 thrust = thrust;
             rospy.loginfo(str)
-            pub.publish(thrust)
+            pub.publish(0, thrust, 0.0, 0.0, 0.0)
             rospy.sleep(0.05)
 
 c = CrazyDemo()

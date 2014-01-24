@@ -119,8 +119,6 @@ class CrazyflieNode:
 	# TODO Talk about new implemenatation
         self.publisher  = rospy.Publisher('quadcopter_status_' + str(self.id), quadcopter_status, latch=True)
 
-        rospy.Subscriber('quadcopter_controll_' + str(self.id), quadcopter_controll, self.set_controll)
-
 	# TODO Which callbacks are still needed?
         # Connection callbacks
         self.crazyflie.connectionInitiated.add_callback(self.connectionInitiated)
@@ -139,7 +137,9 @@ class CrazyflieNode:
         
         #TODO: should be configurable, and support multiple devices
         self.crazyflie.open_link("radio://0/11/250K")
-
+	
+	rospy.Subscriber('quadcopter_controll_' + str(self.id), quadcopter_controll, self.set_controll)
+	rospy.spin()
         #TODO: Test Start 
     def start(self):
         thrust_mult = 1
@@ -174,8 +174,6 @@ class CrazyflieNode:
         print("Connection Setup finished") #DEBUG
         self.link_status = "Connect Setup Finished"
         
-        self.setupStabilizerLog()
-
         """
         Configure the logger and start recording.
  
@@ -188,7 +186,6 @@ class CrazyflieNode:
         """
         print("started logs")
         logconf = logconfigreader.LogConfig('Logging', period=100)
-	logconf = logconfigreader.LogConfig('Logging', period=100)
 	for f in [f for f in FIELDS if f.var is not None]:
 	    logconf.addVariable(logconfigreader.LogVariable(f.var, f.vartype))
 	    logpacket = self._cf.log.create_log_packet(logconf)
@@ -227,23 +224,6 @@ class CrazyflieNode:
 	self.motor_m1 = data['motor.m3']
 	self.motor_m1 = data['motor.m4']
 
-
-    def setupStabilizerLog(self):
-        log_conf = LogConfig("Pitch", 10)
-        log_conf.addVariable(LogVariable("stabilizer.pitch", "float"))
-        log_conf.addVariable(LogVariable("stabilizer.roll", "float"))
-        log_conf.addVariable(LogVariable("stabilizer.thrust", "int32_t"))
-        log_conf.addVariable(LogVariable("stabilizer.yaw", "float"))
-		#TODO Why pitch_log?
-        self.pitch_log = self.crazyflie.log.create_log_packet(log_conf)
- 
-        if self.pitch_log is not None:
-            self.pitch_log.dataReceived.add_callback(self.log_pitch_data)
-            self.pitch_log.start()
-            print("stabilizer.pitch/roll/thrust/yaw now logging")
-        else:
-            print("stabilizer.pitch/roll/thrust/yaw not found in log TOC")
-        
     def connected(self, linkURI):
         self.packetsSinceConnection = 0
         self.link_status = "Connected"
@@ -287,8 +267,8 @@ class CrazyflieNode:
         
         # Send commands to the Crazyflie
         # DEBUG
-	rospy.loginfo(rospy.get_name() + ": Sending setpoint: %f, %f, %f, %d" %
-	       (self.cmd_roll, self.cmd_pitch, self.cmd_yaw, self.cmd_thrust))
+	#rospy.loginfo(rospy.get_name() + ": Sending setpoint: %f, %f, %f, %d" %
+	#       (self.cmd_roll, self.cmd_pitch, self.cmd_yaw, self.cmd_thrust))
         self.crazyflie.commander.send_setpoint(self.cmd_roll, self.cmd_pitch, self.cmd_yaw, self.cmd_thrust)
          
 def run():
