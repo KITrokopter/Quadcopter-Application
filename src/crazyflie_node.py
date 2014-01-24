@@ -274,7 +274,7 @@ class CrazyflieNode:
 			       self.mag_x, self.mag_y, self.mag_z,
 			       self.gyro_x, self.gyro_y, self.gyro_z,
 			       self.acc_x, self.acc_y, self.acc_z,
-			       self.thrust, self.roll, self.pitch, self.yaw)
+			       self.roll, self.pitch, self.yaw)
         
         # Send commands to the Crazyflie
         # DEBUG
