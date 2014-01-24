@@ -70,6 +70,7 @@ class CrazyflieNode:
     Class is required so that methods can access the object fields.
     """
     def __init__(self):
+	print("init started")
         """
         Connect to Crazyflie, initialize drivers and set up callback.
  
@@ -164,12 +165,10 @@ class CrazyflieNode:
 
     def connectionInitiated(self, linkURI):
         self.link_status = "Connection Initiated"
-        self.link_status_pub.publish(self.link_status)
 
     def connectSetupFinished(self, linkURI):
         print("Connection Setup finished") #DEBUG
         self.link_status = "Connect Setup Finished"
-        self.link_status_pub.publish(self.link_status)
         
         self.setupStabilizerLog()
 
