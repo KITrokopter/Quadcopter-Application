@@ -37,32 +37,28 @@ logging.basicConfig(level=logging.DEBUG)
 
 class LogVar(object):
   def __init__(self, label, width, var=None, vartype='float'):
-    self.label = label
-    self.width = width
     self.var = var
     self.vartype = vartype
 
 LOGVARS = [
-    LogVar('URI', 50),
-    LogVar('ROLL', 10, 'stabilizer.roll', 'float'),
-    LogVar('PITCH', 10, 'stabilizer.pitch', 'float'),
-    LogVar('YAW', 10, 'stabilizer.yaw', 'float'),
-    LogVar('THRUST', 10, 'stabilizer.thrust', 'uint16_t'),
-    LogVar('PRESSURE', 10, 'altimeter.pressure'),
-    LogVar('MAG_X', 10, 'mag.x', 'int16_t'),
-    LogVar('MAG_Y', 10, 'mag.y', 'int16_t'),
-    LogVar('MAG_Z', 10, 'mag.z', 'int16_t'),
-    LogVar('ACC_X', 10, 'acc.x', 'float'),
-    LogVar('ACC_Y', 10, 'acc.y', 'float'),
-    LogVar('ACC_Z', 10, 'acc.z', 'float'),
-    LogVar('GYRO_X', 10, 'gyro.x', 'float'),
-    LogVar('GYRO_Y', 10, 'gyro.y', 'float'),
-    LogVar('GYRO_Z', 10, 'gyro.z', 'float'),
-    LogVar('MOTOR_M1', 15, 'motor.m1', 'uint16_t'),
-    LogVar('MOTOR_M2', 15, 'motor.m2', 'uint16_t'),
-    LogVar('MOTOR_M3', 15, 'motor.m3', 'uint16_t'),
-    LogVar('MOTOR_M4', 15, 'motor.m4', 'uint16_t'),
-    LogVar('AUTO', 10)
+    LogVar('stabilizer.roll', 'float'),
+    LogVar('stabilizer.pitch', 'float'),
+    LogVar('stabilizer.yaw', 'float'),
+    LogVar('stabilizer.thrust', 'uint16_t'),
+    LogVar('altimeter.pressure'),
+    LogVar('mag.x', 'int16_t'),
+    LogVar('mag.y', 'int16_t'),
+    LogVar('mag.z', 'int16_t'),
+    LogVar('acc.x', 'float'),
+    LogVar('acc.y', 'float'),
+    LogVar('acc.z', 'float'),
+    LogVar('gyro.x', 'float'),
+    LogVar('gyro.y', 'float'),
+    LogVar('gyro.z', 'float'),
+    LogVar('motor.m1', 'uint16_t'),
+    LogVar('motor.m2', 'uint16_t'),
+    LogVar('motor.m3', 'uint16_t'),
+    LogVar('motor.m4', 'uint16_t')
 ]
 
 class CrazyflieNode:
@@ -185,13 +181,13 @@ class CrazyflieNode:
         data dictionary as logging info.
         """
         print("started logs")
-        logconf = logconfigreader.LogConfig('Logging', period=100)
-	for f in [f for f in FIELDS if f.var is not None]:
+        logconf = LogConfig('Logging', 10)
+	for f in LOGVARS:
 	    logconf.addVariable(logconfigreader.LogVariable(f.var, f.vartype))
 	    logpacket = self._cf.log.create_log_packet(logconf)
-	    if not logpacket:
-		logger.error('Failed to create log packet')
-		return
+	if not logpacket:
+	    logger.error('Failed to create log packet')
+	    return
 	logpacket.dataReceived.add_callback(self._onLogData)
 	logpacket.start()
  
