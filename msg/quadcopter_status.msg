@@ -12,10 +12,10 @@ float32 gyro_z
 float32 acc_x
 float32 acc_y
 float32 acc_z
-uInt16 motor_m1
-uInt16 motor_m2
-uInt16 motor_m3
-uInt16 motor_m4
+uint16 motor_m1
+uint16 motor_m2
+uint16 motor_m3
+uint16 motor_m4
 float32 roll
 float32 pitch
 float32 yaw
