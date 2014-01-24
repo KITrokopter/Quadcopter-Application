@@ -272,9 +272,11 @@ class CrazyflieNode:
         self.cmd_thrust = data.data["thrust"]
 
     def run_node(self):
-        self.publisher.publish(self.id, self.battery_status, self.link_quality,
-			       self.altimeter, self.magnetometer, self.gyroscope,
-			       self.accelerometer, self.thrust, self.roll, self.pitch, self.yaw)
+        self.publisher.publish(self.id, self.battery_status, self.link_quality, self.altimeter,
+			       self.mag_x, self.mag_y, self.mag_z,
+			       self.gyro_x, self.gyro_y, self.gyro_z,
+			       self.acc_x, self.acc_y, self.acc_z,
+			       self.thrust, self.roll, self.pitch, self.yaw)
         
         # Send commands to the Crazyflie
         # DEBUG
