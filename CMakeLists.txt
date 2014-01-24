@@ -83,7 +83,7 @@ catkin_package(
    LIBRARIES quadcopter_application
    CATKIN_DEPENDS rospy std_msgs
    CATKIN_DEPENDS message_runtime
-   DEPENDS system_lib
+   DEPENDS system_lib std_msgs
 )
 
 ###########
