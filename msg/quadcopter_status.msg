@@ -1,0 +1,12 @@
+Header 		header
+uint32		id
+float32		battery_status
+float32 	link_quality
+float32		altimeter_data
+float32[3]	magnetometer_data    
+float32[3]	gyroscope_data
+float32[3]	accelerometer_data
+UInt16[4]	thrust
+float32		roll
+float32		pitch
+float32		yaw
