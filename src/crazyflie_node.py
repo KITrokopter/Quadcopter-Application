@@ -139,7 +139,7 @@ class CrazyflieNode:
         self.crazyflie.open_link("radio://0/11/250K")
 	
 	rospy.Subscriber('quadcopter_controll_' + str(self.id), quadcopter_controll, self.set_controll)
-	rospy.spin()
+	
         #TODO: Test Start 
     def start(self):
         thrust_mult = 1
@@ -254,10 +254,11 @@ class CrazyflieNode:
         self.yaw    = data["stabilizer.yaw"]
 
     def set_controll(self, data):
-        rospy.loginfo(rospy.get_name() + ": Setting thrust to: %d" % data["thrust"])
-        self.cmd_thrust = data["thrust"]
+        rospy.loginfo(rospy.get_name() + ": Setting thrust to: %d" % data.thrust)
+        self.cmd_thrust = data.thrust
 
     def run_node(self):
+	print("sending")
         self.publisher.publish(self.id, self.battery_status, self.link_quality, self.altimeter,
 			       self.mag_x, self.mag_y, self.mag_z,
 			       self.gyro_x, self.gyro_y, self.gyro_z,
