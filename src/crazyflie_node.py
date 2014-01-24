@@ -106,8 +106,6 @@ class CrazyflieNode:
         self.acc_y = 0.0
         self.acc_z = 0.0
         
-        self.roll = 
-        
         self.cmd_thrust = 0
         self.cmd_pitch = 0.0
         self.cmd_roll = 0.0
