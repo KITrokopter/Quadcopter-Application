@@ -58,7 +58,8 @@ LOGVARS = [
     LogVar('motor.m1', 'uint16_t'),
     LogVar('motor.m2', 'uint16_t'),
     LogVar('motor.m3', 'uint16_t'),
-    LogVar('motor.m4', 'uint16_t')
+    LogVar('motor.m4', 'uint16_t'),
+	LogVar('pm.vbat', 'float')
 ]
 
 class CrazyflieNode:
@@ -198,7 +199,7 @@ class CrazyflieNode:
                         (data["acc.x"], data["acc.y"], data["acc.z"]))
 	
 	self.altimeter = data['altimeter.pressure']
-	
+	self.battery_status = data['pm.vbat']
 	self.mag_x = data['mag.x']
 	self.mag_y = data['mag.y']
 	self.mag_z = data['mag.z']
