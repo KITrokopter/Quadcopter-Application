@@ -50,6 +50,14 @@ add_message_files(
     quadcopter_controll.msg
 )
 
+add_service_files(
+  FILES
+  blink.srv
+  close_link.srv
+  find_all.srv
+  open_link.srv
+)
+
 ## Generate services in the 'srv' folder
 # add_service_files(
 #   FILES
