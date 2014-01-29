@@ -63,6 +63,8 @@ LOGVARS = [
 	LogVar('pm.vbat', 'float')
 ]
 
+
+
 class CrazyflieNode:
     """
     Class is required so that methods can access the object fields.
@@ -109,6 +111,10 @@ class CrazyflieNode:
         self.cmd_roll = 0.0
         self.cmd_yaw = 0.0
         
+        #TODO: Call of function in run(), __init__, ... ?
+        open_link_server()
+        close_link_server()
+
         # Init the callbacks for the crazyflie lib
         self.crazyflie = Crazyflie()
         cflib.crtp.init_drivers()
@@ -131,13 +137,30 @@ class CrazyflieNode:
         # TODO find correct name
         # self.crazyflie.batteryStatus.add_callback(self.batteryStatus)
         self.crazyflie.receivedPacket.add_callback(self.receivedPacket)
-        
-        
-        #TODO: should be configurable, and support multiple devices
-        self.crazyflie.open_link("radio://0/11/250K")
 	
 	rospy.Subscriber('quadcopter_controll_' + str(self.id), quadcopter_controll, self.set_controll)
+
+    def handle_open_link(req):
+        #self.crazyflie.open_link("radio://0/11/250K")
+        self.crazyflie.open_link(req.string_uri)
+
+    def open_link_server():
+        rospy.init_node('open_link')
+        s = rospy.Service('open_link', open_link, handle_open_link)
+        print "Ready to open a link to a quadcopter."
+        rospy.spin()    # Necessary? Working? Enough?
 	
+    def handle_close_link(req):
+        shut_down()
+        #TODO: match this function to srv-file
+
+    def close_link_server():
+        rospy.init_node('close_link')
+        s = rospy.Service('close_link', close_link, handle_close_link)
+        print "Ready to close a link to a quadcopter."
+        rospy.spin()    # Necessary? Working? Enough?
+	
+        #TODO: Functionality? (Dominik)
         #TODO: Test Start 
     def start(self):
         thrust_mult = 1
@@ -275,7 +298,8 @@ def run():
     # for this node across multiple classes        
     rospy.init_node('crazyflie')
     print("ros node initialized")
-    #TODO: organize this into several classes that monitor/control one specific thing
+
+    #TODO: organize this into several classes that monitor/control one specific thing (if necessary)
     node = CrazyflieNode()
     print("cf node initialized")
     while not rospy.is_shutdown():
