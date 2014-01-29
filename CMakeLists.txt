@@ -7,6 +7,7 @@ project(quadcopter_application)
 find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
+  rosconsole
   message_generation
 )
 
@@ -74,7 +75,8 @@ add_service_files(
 
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
-   DEPENDENCIES std_msgs
+   DEPENDENCIES 
+   std_msgs
 )
 
 ###################################
@@ -88,10 +90,9 @@ generate_messages(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #   INCLUDE_DIRS include
-   LIBRARIES quadcopter_application
-   CATKIN_DEPENDS rospy std_msgs
-   CATKIN_DEPENDS message_runtime
-   DEPENDS system_lib std_msgs
+#   LIBRARIES quadcopter_application
+   CATKIN_DEPENDS rospy std_msgs message_runtime
+#   DEPENDS system_lib std_msgs
 )
 
 ###########
@@ -103,6 +104,7 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  src/${PROJECT_NAME}/src
 )
 
 ## Declare a cpp library

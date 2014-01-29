@@ -25,14 +25,16 @@
 
 import rospy
 import logging
- 
+import roslib
+roslib.load_manifest('quadcopter_application')
 import cflib.crtp
 from cfclient.utils.logconfigreader import LogConfig
 from cfclient.utils.logconfigreader import LogVariable
 from cflib.crazyflie import Crazyflie
-from quadcopter_application.msg import quadcopter_status
-from quadcopter_application.msg import quadcopter_controll
- 
+#from quadcopter_application.msg import * quadcopter_controll
+from quadcopter_application.srv import *
+from quadcopter_application.msg import * 
+
 logging.basicConfig(level=logging.DEBUG)
 
 #TODO: where is it used?
@@ -162,6 +164,16 @@ class CrazyflieNode:
 	
         #TODO: Functionality? (Dominik)
         #TODO: Test Start 
+
+    def handle_blink(req):
+        pass
+
+    def blink_server():
+        rospy.init_node('blink')
+        s = rospy.Service('blink', blink, handle_blink)
+        print "Ready to blink."     #TODO: Check if link exists.
+        rospy.spin()    # Necessary? Working? Enough?
+
     def start(self):
         thrust_mult = 1
         thrust_step = 500
