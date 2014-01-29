@@ -35,6 +35,7 @@ from quadcopter_application.msg import quadcopter_controll
  
 logging.basicConfig(level=logging.DEBUG)
 
+#TODO: where is it used?
 class LogVar(object):
   def __init__(self, var, vartype='float'):
     self.var = var
@@ -89,7 +90,7 @@ class CrazyflieNode:
         self.motor_m3 = 0
         self.motor_m4 = 0
         
-        self.altimeter = 0.0
+        self.altimeter = 0.0 #TODO: Why do we set these values?
         
         self.mag_x = 0.0
         self.mag_y = 0.0
@@ -112,7 +113,7 @@ class CrazyflieNode:
         self.crazyflie = Crazyflie()
         cflib.crtp.init_drivers()
 
-        # Init the status punlisher topic for ROS
+        # Init the status publisher topic for ROS
 	# TODO Talk about new implemenatation
         self.publisher  = rospy.Publisher('quadcopter_status_' + str(self.id), quadcopter_status, latch=True)
 
