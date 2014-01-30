@@ -92,7 +92,7 @@ catkin_package(
 #   INCLUDE_DIRS include
 #   LIBRARIES quadcopter_application
    CATKIN_DEPENDS rospy std_msgs message_runtime
-#   DEPENDS system_lib std_msgs
+   DEPENDS system_lib std_msgs
 )
 
 ###########
