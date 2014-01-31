@@ -49,12 +49,12 @@ LOGVARS = [
     #LogVar('stabilizer.yaw', 'float'),
     #LogVar('stabilizer.thrust', 'uint16_t'),
     #LogVar('altimeter.pressure'),
-    #LogVar('mag.x', 'int16_t'),
-    #LogVar('mag.y', 'int16_t'),
-    #LogVar('mag.z', 'int16_t'),
-    #LogVar('acc.x', 'float'),
-    #LogVar('acc.y', 'float'),
-    #LogVar('acc.z', 'float'),
+    LogVar('mag.x', 'int16_t'),
+    LogVar('mag.y', 'int16_t'),
+    LogVar('mag.z', 'int16_t'),
+    LogVar('acc.x', 'float'),
+    LogVar('acc.y', 'float'),
+    LogVar('acc.z', 'float'),
     #LogVar('gyro.x', 'float'),
     #LogVar('gyro.y', 'float'),
     #LogVar('gyro.z', 'float'),
@@ -240,6 +240,8 @@ class CrazyflieNode:
     
     def onLogData(self, timestamp, data, logconf):
 	print("got data from cf")
+	print("data: " + str(data))
+	print("timestamp: " + str(data))
 	# DEBUG
         rospy.loginfo("Accelerometer: x=%.2f, y=%.2f, z=%.2f" %
                         (data["acc.x"], data["acc.y"], data["acc.z"]))
