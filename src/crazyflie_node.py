@@ -299,7 +299,7 @@ class CrazyflieNode:
     def run_node(self):
 	h = std_msgs.msg.Header()
 	h.stamp = rospy.Time.now
-	quadcopter_status msg
+	msg = quadcopter_status()
 	msg.header = h
 	msg.id = self.id
 	msg.battery_status = self.battery_status
