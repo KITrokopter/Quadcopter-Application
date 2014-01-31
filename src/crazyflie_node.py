@@ -224,10 +224,15 @@ class CrazyflieNode:
 	self.crazyflie.log.add_config(lg)
 	print("added conf")
 	if lg.valid:
+	    print("valid")
 	    lg.data_received_cb.add_callback(self.onLogData)
+            print("added data cb")
             lg.error_cb.add_callback(self.onLogError)
+            print("added error cb")
             lg.start()
+            print("started log")
 	else:
+	    print("invalid")
             logger.warning("Could not setup logconfiguration after connection!")
     
     def onLogError(self, data):
@@ -296,8 +301,8 @@ class CrazyflieNode:
         self.cmd_thrust = data.thrust
 
     def run_node(self):
-	h = std_msgs.msg.Header()
-	h.stamp = rospy.Time.now
+	#h = std_msgs.msg.Header()
+	#h.stamp = rospy.Time.now
 
         msg = quadcopter_status()
 	msg.header = h
