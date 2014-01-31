@@ -298,35 +298,12 @@ class CrazyflieNode:
     def run_node(self):
 	h = std_msgs.msg.Header()
 	h.stamp = rospy.Time.now
-	msg = quadcopter_status()
-	msg.header = h
-	msg.id = self.id
-	msg.battery_status = self.battery_status
-	msg.link_quality = self.link_quality
-	msg.altimeter = self.altimeter
-	msg.mag_x = self.mag_x
-	msg.mag_y = self.mag_y
-	msg.mag_z = self.mag_z
-	
-	msg.gyro_x = self.gyro_x
-	msg.gyro_y = self.gyro_y
-	msg.gyro_z = self.gyro_z
-	
-	msg.acc_x = self.acc_x
-	msg.acc_y = self.acc_y
-	msg.acc_z = self.acc_z
-	
-	msg.motor_m1 = self.motor_m1
-	msg.motor_m2 = self.motor_m2
-	msg.motor_m3 = self.motor_m3
-	msg.motor_m4 = self.motor_m4
-	
-	msg.roll = self.roll
-	msg.pitch = self.pitch
-	msg.yaw = self.yaw
-	
-        self.publisher.publish(msg)
-        
+
+        self.publisher.publish(h, self.id, self.battery_status, self.link_quality, self.altimeter,
+			       self.gyro_x, self.gyro_y, self.gyro_z,
+			       self.acc_x, self.acc_y, self.acc_z,
+			       self.motor_m1,  self.motor_m2,  self.motor_m3,  self.motor_m4,
+			       self.roll, self.pitch, self.yaw)
         # Send commands to the Crazyflie
         # DEBUG
 	#rospy.loginfo(rospy.get_name() + ": Sending setpoint: %f, %f, %f, %d" %
