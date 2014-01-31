@@ -114,8 +114,8 @@ class CrazyflieNode:
         self.cmd_yaw = 0.0
         
         #TODO: Call of function in run(), __init__, ... ?
-        open_link_server()
-        close_link_server()
+        #open_link_server()
+        #close_link_server()
 
         # Init the callbacks for the crazyflie lib
         self.crazyflie = Crazyflie()
@@ -136,9 +136,8 @@ class CrazyflieNode:
 
         # Link quality callbacks
         self.crazyflie.linkQuality.add_callback(self.linkQuality)
-        # TODO find correct name
-        # self.crazyflie.batteryStatus.add_callback(self.batteryStatus)
         self.crazyflie.receivedPacket.add_callback(self.receivedPacket)
+        self.crazyflie.open_link("radio://0/11/250K")
 	
 	rospy.Subscriber('quadcopter_controll_' + str(self.id), quadcopter_controll, self.set_controll)
 
