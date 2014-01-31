@@ -44,25 +44,25 @@ class LogVar(object):
     self.vartype = vartype
 
 LOGVARS = [
-    LogVar('stabilizer.roll', 'float'),
-    LogVar('stabilizer.pitch', 'float'),
-    LogVar('stabilizer.yaw', 'float'),
-    LogVar('stabilizer.thrust', 'uint16_t'),
-    LogVar('altimeter.pressure'),
-    LogVar('mag.x', 'int16_t'),
-    LogVar('mag.y', 'int16_t'),
-    LogVar('mag.z', 'int16_t'),
-    LogVar('acc.x', 'float'),
-    LogVar('acc.y', 'float'),
-    LogVar('acc.z', 'float'),
-    LogVar('gyro.x', 'float'),
-    LogVar('gyro.y', 'float'),
-    LogVar('gyro.z', 'float'),
+    #LogVar('stabilizer.roll', 'float'),
+    #LogVar('stabilizer.pitch', 'float'),
+    #LogVar('stabilizer.yaw', 'float'),
+    #LogVar('stabilizer.thrust', 'uint16_t'),
+    #LogVar('altimeter.pressure'),
+    #LogVar('mag.x', 'int16_t'),
+    #LogVar('mag.y', 'int16_t'),
+    #LogVar('mag.z', 'int16_t'),
+    #LogVar('acc.x', 'float'),
+    #LogVar('acc.y', 'float'),
+    #LogVar('acc.z', 'float'),
+    #LogVar('gyro.x', 'float'),
+    #LogVar('gyro.y', 'float'),
+    #LogVar('gyro.z', 'float'),
     LogVar('motor.m1', 'uint16_t'),
     LogVar('motor.m2', 'uint16_t'),
     LogVar('motor.m3', 'uint16_t'),
     LogVar('motor.m4', 'uint16_t'),
-    LogVar('pm.vbat', 'float')
+    #LogVar('pm.vbat', 'float')
 ]
 
 
@@ -223,7 +223,7 @@ class CrazyflieNode:
 	print("added vars to log")
 	self.crazyflie.log.add_config(lg)
 	print("added conf")
-	if lg.valid:
+	if (lg.valid):
 	    print("valid")
 	    lg.data_received_cb.add_callback(self.onLogData)
             print("added data cb")
