@@ -28,8 +28,8 @@ import logging
 import roslib
 roslib.load_manifest('quadcopter_application')
 import cflib.crtp
-from cfclient.utils.logconfigreader import LogConfig
-from cfclient.utils.logconfigreader import LogVariable
+import std_msgs.msg
+from cflib.crazyflie.log import Log, LogVariable, LogConfig
 from cflib.crazyflie import Crazyflie
 #from quadcopter_application.msg import * quadcopter_controll
 from quadcopter_application.srv import *
@@ -37,7 +37,7 @@ from quadcopter_application.msg import *
 
 logging.basicConfig(level=logging.DEBUG)
 
-#TODO: where is it used?
+#class for the cf vars which shall be used
 class LogVar(object):
   def __init__(self, var, vartype='float'):
     self.var = var
@@ -62,7 +62,7 @@ LOGVARS = [
     LogVar('motor.m2', 'uint16_t'),
     LogVar('motor.m3', 'uint16_t'),
     LogVar('motor.m4', 'uint16_t'),
-	LogVar('pm.vbat', 'float')
+    LogVar('pm.vbat', 'float')
 ]
 
 
@@ -218,16 +218,22 @@ class CrazyflieNode:
         data dictionary as logging info.
         """
         print("started logs")
-        logconf = LogConfig('Logging', 10)
+        lg = LogConfig("Stabalizer", 100)
 	for f in LOGVARS:
-	    logconf.addVariable(logconfigreader.LogVariable(f.var, f.vartype))
-	    logpacket = self.crazyflie.log.create_log_packet(logconf)
-	if not logpacket:
-	    logger.error('Failed to create log packet')
-	    return
-	logpacket.dataReceived.add_callback(self.onLogData)
-	logpacket.start()
- 
+	    lg.add_variable(f.var)
+	
+	self.crazyflie.log.add_config(lg)
+	
+	if lg.valid:
+	    lg.data_received_cb.add_callback(self.onLogData)
+            lg.error_cb.add_callback(self.onLogError)
+            lg.start()
+	else:
+            logger.warning("Could not setup logconfiguration after connection!")
+    
+    def onLogError(self, data):
+	logger.warning("Log error!")
+    
     def onLogData(self, data):
 	print("got data from cf")
 	# DEBUG
@@ -291,12 +297,36 @@ class CrazyflieNode:
         self.cmd_thrust = data.thrust
 
     def run_node(self):
-        self.publisher.publish(self.id, self.battery_status, self.link_quality, self.altimeter,
-			       self.mag_x, self.mag_y, self.mag_z,
-			       self.gyro_x, self.gyro_y, self.gyro_z,
-			       self.acc_x, self.acc_y, self.acc_z,
-			       self.motor_m1,  self.motor_m2,  self.motor_m3,  self.motor_m4,
-			       self.roll, self.pitch, self.yaw)
+	h = std_msgs.msg.Header()
+	h.stamp = rospy.Time.now
+	quadcopter_status msg
+	msg.header = h
+	msg.id = self.id
+	msg.battery_status = self.battery_status
+	msg.link_quality = self.link_quality
+	msg.altimeter = self.altimeter
+	msg.mag_x = self.mag_x
+	msg.mag_y = self.mag_y
+	msg.mag_z = self.mag_z
+	
+	msg.gyro_x = self.gyro_x
+	msg.gyro_y = self.gyro_y
+	msg.gyro_z = self.gyro_z
+	
+	msg.acc_x = self.acc_x
+	msg.acc_y = self.acc_y
+	msg.acc_z = self.acc_z
+	
+	msg.motor_m1 = self.motor_m1
+	msg.motor_m2 = self.motor_m2
+	msg.motor_m3 = self.motor_m3
+	msg.motor_m4 = self.motor_m4
+	
+	msg.roll = self.roll
+	msg.pitch = self.pitch
+	msg.yaw = self.yaw
+	
+        self.publisher.publish(msg)
         
         # Send commands to the Crazyflie
         # DEBUG
