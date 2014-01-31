@@ -236,9 +236,9 @@ class CrazyflieNode:
             logger.warning("Could not setup logconfiguration after connection!")
     
     def onLogError(self, data):
-	logger.warning("Log error!")
+	print("Log error!")
     
-    def onLogData(self, data):
+    def onLogData(self, timestamp, data, logconf):
 	print("got data from cf")
 	# DEBUG
         rospy.loginfo("Accelerometer: x=%.2f, y=%.2f, z=%.2f" %
