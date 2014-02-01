@@ -103,7 +103,7 @@ class CrazyflieNode:
         self.crazyflie.connection_failed.add_callback(self.connectionFailed)
 
         # Link quality callbacks
-        self.crazyflie.link_quality.add_callback(self.linkQuality)
+        self.crazyflie.link_quality_updated.add_callback(self.linkQuality)
         self.crazyflie.received_packet.add_callback(self.receivedPacket)
         self.crazyflie.open_link("radio://0/"+self.link_channel+"/250K")
 	
