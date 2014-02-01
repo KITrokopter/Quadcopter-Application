@@ -105,7 +105,7 @@ class CrazyflieNode:
         # Link quality callbacks
         self.crazyflie.link_quality_updated.add_callback(self.linkQuality)
         self.crazyflie.packet_received.add_callback(self.receivedPacket)
-        self.crazyflie.open_link("radio://0/"+self.link_channel+"/250K")
+        self.crazyflie.open_link("radio://0/" + str(self.link_channel) + "/250K")
 	
 	#init the ROS topic for controlling the quadcopter
 	rospy.Subscriber('quadcopter_controll_' + str(self.id), quadcopter_controll, self.set_controll)
