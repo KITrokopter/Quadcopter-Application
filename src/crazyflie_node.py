@@ -263,7 +263,7 @@ def run():
     print("cf node initialized")
     while not rospy.is_shutdown():
         node.run_node()
-        rospy.sleep(0.05)
+        rospy.sleep(0.2)
     node.shut_down()
         
         
