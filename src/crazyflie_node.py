@@ -236,7 +236,6 @@ class CrazyflieNode:
 	msg.id = self.id
 	msg.battery_status = self.battery_status
 	msg.link_quality = self.link_quality
-	msg.altimeter = self.altimeter
 
 	msg.motor_m1 = self.motor_m1
 	msg.motor_m2 = self.motor_m2
