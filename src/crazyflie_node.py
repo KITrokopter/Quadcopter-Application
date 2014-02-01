@@ -46,8 +46,8 @@ LOGVARS = ['stabilizer.roll',
 	   'motor.m1',
 	   'motor.m2',
 	   'motor.m3',
-	   'motor.m4',
-	   'pm.vbat'
+	   'motor.m4'
+	   #'pm.vbat'
 ]
 
 
