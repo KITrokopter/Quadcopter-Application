@@ -190,7 +190,7 @@ class CrazyflieNode:
         print("start logs")
         lg = LogConfig("log", 50)
 	for f in LOGVARS:
-	    lg.add_variable(f.var)
+	    lg.add_variable(f)
 	print("added vars to log")
 	self.crazyflie.log.add_config(lg)
 	print("added conf")
@@ -263,7 +263,7 @@ def run():
     print("cf node initialized")
     while not rospy.is_shutdown():
         node.run_node()
-        rospy.sleep(0.2)
+        rospy.sleep(0.05)
     node.shut_down()
         
         
