@@ -97,7 +97,6 @@ class CrazyflieNode:
 
 	# TODO Which callbacks are still needed?
         # Connection callbacks
-        self.crazyflie.connectionInitiated.add_callback(self.connectionInitiated)
         self.crazyflie.connectSetupFinished.add_callback(self.connectSetupFinished)
         self.crazyflie.connected.add_callback(self.connected)
         self.crazyflie.disconnected.add_callback(self.disconnected)
@@ -154,9 +153,6 @@ class CrazyflieNode:
 	    print("shut down")
         finally:
             self.crazyflie.close_link()
-
-    def connectionInitiated(self, linkURI):
-        self.link_status = "Connection Initiated"
 
     def connectSetupFinished(self, linkURI):
         print("Connection Setup finished") #DEBUG
