@@ -97,7 +97,6 @@ class CrazyflieNode:
 
 	# TODO Which callbacks are still needed?
         # Connection callbacks
-        self.crazyflie.connectSetupFinished.add_callback(self.connectSetupFinished)
         self.crazyflie.connected.add_callback(self.connected)
         self.crazyflie.disconnected.add_callback(self.disconnected)
         self.crazyflie.connectionLost.add_callback(self.connectionLost)
@@ -154,9 +153,29 @@ class CrazyflieNode:
         finally:
             self.crazyflie.close_link()
 
-    def connectSetupFinished(self, linkURI):
-        print("Connection Setup finished") #DEBUG
-        self.link_status = "Connect Setup Finished"
+    def onLogError(self, data):
+	print("Log error!")
+    
+    def onLogData(self, timestamp, data, logconf):
+	print("got data from cf")
+	print("data: " + str(data))
+	print("timestamp: " + str(data))
+	self.battery_status = data['pm.vbat']
+	
+	self.stabilizer_roll = data['stabilizer.roll']
+	self.stabilizer_pitch = data['stabilizer.pitch']
+	self.stabilizer_yaw = data['stabilizer.yaw']
+	self.stabilizer_thrust = data['stabilizer.thrust']
+	
+	self.motor_m1 = data['motor.m1']
+	self.motor_m1 = data['motor.m2']
+	self.motor_m1 = data['motor.m3']
+	self.motor_m1 = data['motor.m4']
+
+    def connected(self, linkURI):
+        self.packetsSinceConnection = 0
+        self.link_status = "Connected"
+        print("Connected") #DEBUG
         
         """
         Configure the logger and start recording.
@@ -186,30 +205,6 @@ class CrazyflieNode:
 	else:
 	    print("invalid")
             logger.warning("Could not setup logconfiguration after connection!")
-    
-    def onLogError(self, data):
-	print("Log error!")
-    
-    def onLogData(self, timestamp, data, logconf):
-	print("got data from cf")
-	print("data: " + str(data))
-	print("timestamp: " + str(data))
-	self.battery_status = data['pm.vbat']
-	
-	self.stabilizer_roll = data['stabilizer.roll']
-	self.stabilizer_pitch = data['stabilizer.pitch']
-	self.stabilizer_yaw = data['stabilizer.yaw']
-	self.stabilizer_thrust = data['stabilizer.thrust']
-	
-	self.motor_m1 = data['motor.m1']
-	self.motor_m1 = data['motor.m2']
-	self.motor_m1 = data['motor.m3']
-	self.motor_m1 = data['motor.m4']
-
-    def connected(self, linkURI):
-        self.packetsSinceConnection = 0
-        self.link_status = "Connected"
-        print("Connected") #DEBUG
 
     def disconnected(self, linkURI):
         self.link_status = "Disconnected"
