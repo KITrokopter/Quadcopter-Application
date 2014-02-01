@@ -99,8 +99,8 @@ class CrazyflieNode:
         # Connection callbacks
         self.crazyflie.connected.add_callback(self.connected)
         self.crazyflie.disconnected.add_callback(self.disconnected)
-        self.crazyflie.connectionLost.add_callback(self.connectionLost)
-        self.crazyflie.connectionFailed.add_callback(self.connectionFailed)
+        self.crazyflie.connection_lost.add_callback(self.connectionLost)
+        self.crazyflie.connection_failed.add_callback(self.connectionFailed)
 
         # Link quality callbacks
         self.crazyflie.linkQuality.add_callback(self.linkQuality)
