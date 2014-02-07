@@ -56,7 +56,7 @@ LOGVARS_STABILIZER = ['stabilizer.roll',
 		      ]
 LOGVARS_STABILIZER_INTERVALL = 50
 
-LOGVARS_SYS = ['pm.vbat']    
+LOGVARS_SYSTEM = ['pm.vbat']    
 LOGVARS_SYSTEM_INTERVALL = 500
 
 class CrazyflieNode:
