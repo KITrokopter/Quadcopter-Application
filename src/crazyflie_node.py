@@ -254,11 +254,11 @@ class CrazyflieNode:
         self.cmd_yaw = data.yaw
 
     def run_node(self):
-	h = std_msgs.msg.Header()
-	h.stamp = rospy.Time.now
+	#h = std_msgs.msg.Header()
+	#h.stamp = rospy.Time.now
 
         msg = quadcopter_status()
-	msg.header = h
+	#msg.header = h
 	msg.id = self.id
 	msg.battery_status = self.battery_status
 	msg.link_quality = self.link_quality
