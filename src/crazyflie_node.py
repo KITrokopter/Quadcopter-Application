@@ -166,8 +166,8 @@ class CrazyflieNode:
     
     def onLogDataMotor(self, timestamp, data, logconf):
 	print("got data from cf")
-	print("data: " + str(data))
-	print("timestamp: " + str(data))
+	print("Data: " + str(data))
+	print("imestamp: " + str(timestamp))
 	
 	self.motor_m1 = data['motor.m1']
 	self.motor_m1 = data['motor.m2']
@@ -292,7 +292,7 @@ class CrazyflieNode:
         self.crazyflie.commander.send_setpoint(self.cmd_roll, self.cmd_pitch, self.cmd_yaw, self.cmd_thrust)
          
 def run():
-    rospy.init_node('crazyflie')
+    rospy.init_node('crazyflie', log_level=rospy.DEBUG)
     print("ros node initialized")
 
     #TODO: organize this into several classes that monitor/control one specific thing (if necessary)
