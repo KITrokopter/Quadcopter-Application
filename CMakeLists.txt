@@ -48,7 +48,6 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
     FILES
     quadcopter_status.msg
-    quadcopter_controll.msg
 )
 
 add_service_files(
