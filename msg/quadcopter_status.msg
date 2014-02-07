@@ -1,21 +1,12 @@
 Header header
-uint32 id
+uint32 id #TODO: may be not necessary
 float32 battery_status
 float32 link_quality
-float32 altimeter
-float32 mag_x
-float32 mag_y
-float32 mag_z
-float32 gyro_x
-float32 gyro_y
-float32 gyro_z
-float32 acc_x
-float32 acc_y
-float32 acc_z
 uint16 motor_m1
 uint16 motor_m2
 uint16 motor_m3
 uint16 motor_m4
-float32 roll
-float32 pitch
-float32 yaw
+float32 stabilizer_roll
+float32 stabilizer_pitch
+float32 stabilizer_yaw
+uint16 stabilizer_thrust
