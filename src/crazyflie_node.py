@@ -39,17 +39,29 @@ from quadcopter_application.msg import *
 
 logging.basicConfig(level=logging.DEBUG)
 
-LOGVARS = ['stabilizer.roll',
-	   'stabilizer.pitch',
-	   'stabilizer.yaw',
-	   'stabilizer.thrust',
-	   'motor.m1',
-	   'motor.m2',
-	   'motor.m3',
-	   'motor.m4'
-	   #'pm.vbat'
+#variables which will be received from the quadcopters
+#split into multiple packages since they would be to big for one single package 
+LOGVARS_MOTOR = [
+    'motor.m1',
+    'motor.m2',
+    'motor.m3',
+    'motor.m4' 
 ]
+#time to wait between to packages of this type in ms
+LOGVARS_MOTOR_INTERVALL = 100
 
+LOGVARS_STABILIZER = [
+    'stabilizer.roll',
+    'stabilizer.pitch',
+    'stabilizer.yaw',
+    'stabilizer.thrust'
+]
+LOGVARS_STABILIZER_INTERVALL = 50
+
+LOGVARS_SYS = [
+    'pm.vbat'
+]    
+LOGVARS_SYSTEM_INTERVALL = 500
 
 class CrazyflieNode:
 
@@ -156,21 +168,31 @@ class CrazyflieNode:
     def onLogError(self, data):
 	print("Log error!")
     
-    def onLogData(self, timestamp, data, logconf):
+    def onLogDataMotor(self, timestamp, data, logconf):
 	print("got data from cf")
 	print("data: " + str(data))
 	print("timestamp: " + str(data))
-	self.battery_status = data['pm.vbat']
+	
+	self.motor_m1 = data['motor.m1']
+	self.motor_m1 = data['motor.m2']
+	self.motor_m1 = data['motor.m3']
+	self.motor_m1 = data['motor.m4']
+	
+    def onLogDataStabilizer(self, timestamp, data, logconf):
+	print("got data from cf")
+	print("data: " + str(data))
+	print("timestamp: " + str(data))
 	
 	self.stabilizer_roll = data['stabilizer.roll']
 	self.stabilizer_pitch = data['stabilizer.pitch']
 	self.stabilizer_yaw = data['stabilizer.yaw']
 	self.stabilizer_thrust = data['stabilizer.thrust']
 	
-	self.motor_m1 = data['motor.m1']
-	self.motor_m1 = data['motor.m2']
-	self.motor_m1 = data['motor.m3']
-	self.motor_m1 = data['motor.m4']
+    def onLogDataSystem(self, timestamp, data, logconf):
+	print("got data from cf")
+	print("data: " + str(data))
+	print("timestamp: " + str(data))
+	self.battery_status = data['pm.vbat']
 
     def connected(self, linkURI):
         self.packetsSinceConnection = 0
@@ -188,19 +210,38 @@ class CrazyflieNode:
         data dictionary as logging info.
         """
         print("start logs")
-        lg = LogConfig("log", 50)
-	for f in LOGVARS:
-	    lg.add_variable(f)
-	print("added vars to log")
-	self.crazyflie.log.add_config(lg)
+        lgM = LogConfig("logM", LOGVARS_MOTOR_INTERVALL)
+	for f in LOGVARS_MOTOR:
+	    lgM.add_variable(f)
+	print("added vars to log m")
+	self.crazyflie.log.add_config(lgM)
+	
+	lgSt = LogConfig("logSt", LOGVARS_STABILIZER_INTERVALL)
+	for f in LOGVARS_STABILIZER:
+	    lgM.add_variable(f)
+	print("added vars to log st")
+	self.crazyflie.log.add_config(lgSt)
+	
+	lgSy = LogConfig("logSy", LOGVARS_SYSTEM_INTERVALL)
+	for f in LOGVARS_SYSTEM:
+	    lgSy.add_variable(f)
+	print("added vars to log sy")
+	self.crazyflie.log.add_config(lgSy)
+	
 	print("added conf")
-	if (lg.valid):
-	    print("valid")
-	    lg.data_received_cb.add_callback(self.onLogData)
+	if (lgM.valid and lgSt.valid and lgSy.valid):
+	    print("all valid")
+	    lgM.data_received_cb.add_callback(self.onLogDataMotor)
+	    lgSt.data_received_cb.add_callback(self.onLogDataStabilizer)
+	    lgSy.data_received_cb.add_callback(self.onLogDataSystem)
             print("added data cb")
-            lg.error_cb.add_callback(self.onLogError)
+            lgM.error_cb.add_callback(self.onLogError)
+            lgSt.error_cb.add_callback(self.onLogError)
+            lgSy.error_cb.add_callback(self.onLogError)
             print("added error cb")
-            lg.start()
+            lgM.start()
+            lgSy.start()
+            lgSt.start()
             print("started log")
 	else:
 	    print("invalid")
