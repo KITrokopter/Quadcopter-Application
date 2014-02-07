@@ -272,7 +272,7 @@ class CrazyflieNode:
 	msg.stabilizer_pitch = self.stabilizer_pitch
 	msg.stabilizer_yaw = self.stabilizer_yaw
 	msg.stabilizer_thrust = self.stabilizer_thrust
-
+	print(str(msg))
         self.publisher.publish(msg)
         # Send commands to the Crazyflie
         # DEBUG
