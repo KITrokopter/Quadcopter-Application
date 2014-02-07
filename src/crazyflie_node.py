@@ -41,26 +41,22 @@ logging.basicConfig(level=logging.DEBUG)
 
 #variables which will be received from the quadcopters
 #split into multiple packages since they would be to big for one single package 
-LOGVARS_MOTOR = [
-    'motor.m1',
-    'motor.m2',
-    'motor.m3',
-    'motor.m4' 
-]
+LOGVARS_MOTOR = ['motor.m1',
+		 'motor.m2',
+		 'motor.m3',
+		 'motor.m4'
+		 ]
 #time to wait between to packages of this type in ms
 LOGVARS_MOTOR_INTERVALL = 100
 
-LOGVARS_STABILIZER = [
-    'stabilizer.roll',
-    'stabilizer.pitch',
-    'stabilizer.yaw',
-    'stabilizer.thrust'
-]
+LOGVARS_STABILIZER = ['stabilizer.roll',
+		      'stabilizer.pitch',
+		      'stabilizer.yaw',
+		      'stabilizer.thrust'
+		      ]
 LOGVARS_STABILIZER_INTERVALL = 50
 
-LOGVARS_SYS = [
-    'pm.vbat'
-]    
+LOGVARS_SYS = ['pm.vbat']    
 LOGVARS_SYSTEM_INTERVALL = 500
 
 class CrazyflieNode:
@@ -218,7 +214,7 @@ class CrazyflieNode:
 	
 	lgSt = LogConfig("logSt", LOGVARS_STABILIZER_INTERVALL)
 	for f in LOGVARS_STABILIZER:
-	    lgM.add_variable(f)
+	    lgSt.add_variable(f)
 	print("added vars to log st")
 	self.crazyflie.log.add_config(lgSt)
 	
@@ -240,8 +236,8 @@ class CrazyflieNode:
             lgSy.error_cb.add_callback(self.onLogError)
             print("added error cb")
             lgM.start()
-            lgSy.start()
             lgSt.start()
+            lgSy.start()
             print("started log")
 	else:
 	    print("invalid")
