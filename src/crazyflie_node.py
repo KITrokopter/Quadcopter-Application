@@ -165,29 +165,18 @@ class CrazyflieNode:
 	print("Log error!")
     
     def onLogDataMotor(self, timestamp, data, logconf):
-	print("got data from cf")
-	print("Data: " + str(data))
-	print("imestamp: " + str(timestamp))
-	
 	self.motor_m1 = data['motor.m1']
 	self.motor_m1 = data['motor.m2']
 	self.motor_m1 = data['motor.m3']
 	self.motor_m1 = data['motor.m4']
 	
     def onLogDataStabilizer(self, timestamp, data, logconf):
-	print("got data from cf")
-	print("data: " + str(data))
-	print("timestamp: " + str(data))
-	
 	self.stabilizer_roll = data['stabilizer.roll']
 	self.stabilizer_pitch = data['stabilizer.pitch']
 	self.stabilizer_yaw = data['stabilizer.yaw']
 	self.stabilizer_thrust = data['stabilizer.thrust']
 	
     def onLogDataSystem(self, timestamp, data, logconf):
-	print("got data from cf")
-	print("data: " + str(data))
-	print("timestamp: " + str(data))
 	self.battery_status = data['pm.vbat']
 
     def connected(self, linkURI):
