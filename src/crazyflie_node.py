@@ -36,6 +36,7 @@ from cflib.crazyflie.log import Log, LogVariable, LogConfig
 
 from quadcopter_application.srv import *
 from quadcopter_application.msg import * 
+from control_application.msg import *
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -68,7 +69,7 @@ class CrazyflieNode:
  
         #the module id which this apllication gets from the api
         self.id = 0
-        self.link_channel = 11
+        self.link_channel = 10
         
         self.link_status = "Unknown"
         self.link_quality = 0.0
