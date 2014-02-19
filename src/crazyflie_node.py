@@ -31,6 +31,7 @@ roslib.load_manifest('quadcopter_application')
 import cflib.crtp
 import std_msgs.msg
 
+from sets import Set
 from cflib.crazyflie import Crazyflie
 from cflib.crazyflie.log import Log, LogVariable, LogConfig
 
@@ -69,6 +70,11 @@ class CrazyflieNode:
  
         #the module id which this apllication gets from the api
         self.id = 0
+        self.dongle_id = 0
+        
+        if rospy.has_param('dongle_id'):
+	    self.dongle_id = rospy.get_param('dongle_id')
+        
         self.link_channel = 10
         
         self.link_status = "Unknown"
@@ -94,6 +100,7 @@ class CrazyflieNode:
         self.cmd_thrust = 0
         
         #TODO: Call of function in run(), __init__, ... ?
+        search_link_service()
         #open_link_server()
         #close_link_server()
 
@@ -114,21 +121,30 @@ class CrazyflieNode:
         # Link quality callbacks
         self.crazyflie.link_quality_updated.add_callback(self.linkQuality)
         self.crazyflie.packet_received.add_callback(self.receivedPacket)
-        self.crazyflie.open_link("radio://0/" + str(self.link_channel) + "/250K")
+    
+    def init_search_link_service():
+	rospy.Service('search_links', search_links, handle_search_links)
+	
+    def handle_search_links(req):
+	available = cflib.crtp.scan_interfaces()
+	channels = set()
+	for i in available
+	    channels.add(available[1])
+        return search_linksResponse(channels)
+    
+    def handle_open_link(req):
+        self.link_channel = req.channel
+        self.crazyflie.open_link("radio://" + str(self.dongle_id) + "/" + str(self.link_channel) + "/250K")
 	
 	#init the ROS topic for controlling the quadcopter
 	rospy.Subscriber('quadcopter_movement_' + str(self.id), quadcopter_movement, self.set_movement)
-
-    def handle_open_link(req):
-        self.crazyflie.open_link(req.string_uri)
 
     def open_link_server():
         rospy.init_node('open_link')
         
         #service for opening a link to a quadcopter
-        s = rospy.Service('open_link' + str(self.id), open_link, handle_open_link)
+        s = rospy.Service('open_link_' + str(self.id), open_link, handle_open_link)
         print "Ready to open a link to a quadcopter."
-        rospy.spin() #this will probably cause problems
 	
     def handle_close_link(req):
         shut_down()
@@ -154,7 +170,6 @@ class CrazyflieNode:
         #service for blinking to see which quadcopter is managed
         s = rospy.Service('blink' + str(self.id), blink, handle_blink)
         print "Ready to blink."     #TODO: Check if link exists.
-        rospy.spin()    # Necessary? Working? Enough?
 
     def shut_down(self):
         try:
