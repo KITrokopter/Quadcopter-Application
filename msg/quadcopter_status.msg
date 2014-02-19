@@ -1,5 +1,4 @@
 Header header
-uint32 id #TODO: may be not necessary
 float32 battery_status
 float32 link_quality
 uint16 motor_m1
