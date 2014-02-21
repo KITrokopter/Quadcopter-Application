@@ -99,10 +99,11 @@ class CrazyflieNode:
         self.cmd_yaw = 0.0
         self.cmd_thrust = 0
         
-        #TODO: Call of function in run(), __init__, ... ?
-        search_link_service()
-        #open_link_server()
-        #close_link_server()
+        #initialize the services
+        init_search_link_service()
+        init_open_link_service()
+        init_close_link_service()
+        init_blink_service()
 
         # Init the callbacks for the crazyflie lib
         self.crazyflie = Crazyflie()
@@ -139,7 +140,7 @@ class CrazyflieNode:
 	#init the ROS topic for controlling the quadcopter
 	rospy.Subscriber('quadcopter_movement_' + str(self.id), quadcopter_movement, self.set_movement)
 
-    def open_link_server():
+    def init_open_link_service():
         rospy.init_node('open_link')
         
         #service for opening a link to a quadcopter
@@ -148,28 +149,24 @@ class CrazyflieNode:
 	
     def handle_close_link(req):
         shut_down()
-        #TODO: match this function to srv-file
 
-    def close_link_server():
+    def init_close_link_service():
         rospy.init_node('close_link')
         
 	#service for closing the link to the quadcopter
         s = rospy.Service('close_link' + str(self.id), close_link, handle_close_link)
         print "Ready to close a link to a quadcopter."
-        rospy.spin()    # Necessary? Working? Enough?
-	
-        #TODO: Functionality? (Dominik)
-        #TODO: Test Start 
 
     def handle_blink(req):
-        pass
+	#set the trust to make the rotors spin but not to start the quadcopter
+        self.thrust = 15000
+        rospy.sleep(3.0)
+        self.thrust = 0
 
-    def blink_server():
-        rospy.init_node('blink')
-        
+    def init_blink_service():
         #service for blinking to see which quadcopter is managed
         s = rospy.Service('blink' + str(self.id), blink, handle_blink)
-        print "Ready to blink."     #TODO: Check if link exists.
+        print "Ready to blink." 
 
     def shut_down(self):
         try:
