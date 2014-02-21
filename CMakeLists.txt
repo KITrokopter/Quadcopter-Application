@@ -116,7 +116,7 @@ include_directories(
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-add_dependencies(quadcopter_application_node quadcopter_application_generate_messages_cpp 
+add_dependencies(quadcopter_application quadcopter_application_generate_messages_cpp 
   control_application_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
