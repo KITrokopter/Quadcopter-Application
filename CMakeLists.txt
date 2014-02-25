@@ -54,7 +54,7 @@ add_service_files(
   FILES
   blink.srv
   close_link.srv
-  find_all.srv
+  search_links.srv
   open_link.srv
 )
 
