@@ -124,7 +124,7 @@ class CrazyflieNode:
         self.crazyflie.packet_received.add_callback(self.receivedPacket)
     
     def init_search_link_service():
-	rospy.Service('search_links', search_links, handle_search_links)
+	rospy.Service('search_links_' + str(self.id), search_links, handle_search_links)
 	
     def handle_search_links(req):
 	available = cflib.crtp.scan_interfaces()
@@ -141,8 +141,6 @@ class CrazyflieNode:
 	rospy.Subscriber('quadcopter_movement_' + str(self.id), quadcopter_movement, self.set_movement)
 
     def init_open_link_service():
-        rospy.init_node('open_link')
-        
         #service for opening a link to a quadcopter
         s = rospy.Service('open_link_' + str(self.id), open_link, handle_open_link)
         print "Ready to open a link to a quadcopter."
@@ -151,10 +149,8 @@ class CrazyflieNode:
         shut_down()
 
     def init_close_link_service():
-        rospy.init_node('close_link')
-        
 	#service for closing the link to the quadcopter
-        s = rospy.Service('close_link' + str(self.id), close_link, handle_close_link)
+        s = rospy.Service('close_link_' + str(self.id), close_link, handle_close_link)
         print "Ready to close a link to a quadcopter."
 
     def handle_blink(req):
@@ -165,7 +161,7 @@ class CrazyflieNode:
 
     def init_blink_service():
         #service for blinking to see which quadcopter is managed
-        s = rospy.Service('blink' + str(self.id), blink, handle_blink)
+        s = rospy.Service('blink_' + str(self.id), blink, handle_blink)
         print "Ready to blink." 
 
     def shut_down(self):
