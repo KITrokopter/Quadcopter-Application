@@ -64,7 +64,7 @@ LOGVARS_SYSTEM_INTERVALL = 500
 class CrazyflieNode:
 
     def __init__(self):
-	print("init started")
+        print("init started")
 
         #Connect to Crazyflie, initialize drivers and set up callback.
  
@@ -100,10 +100,10 @@ class CrazyflieNode:
         self.cmd_thrust = 0
         
         #initialize the services
-        init_search_links_service()
-        init_open_link_service()
-        init_close_link_service()
-        init_blink_service()
+        self.init_open_link_service()
+        self.init_search_links_service()
+        self.init_close_link_service()
+        self.init_blink_service()
 
         # Init the callbacks for the crazyflie lib
         self.crazyflie = Crazyflie()
@@ -112,7 +112,7 @@ class CrazyflieNode:
         #init the status publisher topic for ROS
         self.publisher  = rospy.Publisher('quadcopter_status_' + str(self.id), quadcopter_status, latch=True)
 
-	# TODO Which callbacks are still needed?
+        # TODO Which callbacks are still needed?
         # Connection callbacks
         self.crazyflie.connected.add_callback(self.connected)
         self.crazyflie.disconnected.add_callback(self.disconnected)
@@ -122,10 +122,10 @@ class CrazyflieNode:
         # Link quality callbacks
         self.crazyflie.link_quality_updated.add_callback(self.linkQuality)
         self.crazyflie.packet_received.add_callback(self.receivedPacket)
+
+        #init the ROS topic for controlling the quadcopter
+        rospy.Subscriber('quadcopter_movement_' + str(self.id), quadcopter_movement, self.set_movement)
     
-    def init_search_links_service():
-	rospy.Service('search_links_' + str(self.id), search_links, handle_search_links)
-	
     def handle_search_links(req):
         available = cflib.crtp.scan_interfaces()
         channels = set()
@@ -133,14 +133,14 @@ class CrazyflieNode:
             channels.add(available[1])
         return search_linksResponse(channels)
     
+    def init_search_links_service(self):
+        s = rospy.Service('search_links_' + str(self.id), search_links, handle_search_links)
+
     def handle_open_link(req):
         self.link_channel = req.channel
         self.crazyflie.open_link("radio://" + str(self.dongle_id) + "/" + str(self.link_channel) + "/250K")
-	
-	#init the ROS topic for controlling the quadcopter
-	rospy.Subscriber('quadcopter_movement_' + str(self.id), quadcopter_movement, self.set_movement)
 
-    def init_open_link_service():
+    def init_open_link_service(self):
         #service for opening a link to a quadcopter
         s = rospy.Service('open_link_' + str(self.id), open_link, handle_open_link)
         print "Ready to open a link to a quadcopter."
@@ -148,7 +148,7 @@ class CrazyflieNode:
     def handle_close_link(req):
         shut_down()
 
-    def init_close_link_service():
+    def init_close_link_service(self):
 	#service for closing the link to the quadcopter
         s = rospy.Service('close_link_' + str(self.id), close_link, handle_close_link)
         print "Ready to close a link to a quadcopter."
@@ -159,7 +159,7 @@ class CrazyflieNode:
         rospy.sleep(3.0)
         self.thrust = 0
 
-    def init_blink_service():
+    def init_blink_service(self):
         #service for blinking to see which quadcopter is managed
         s = rospy.Service('blink_' + str(self.id), blink, handle_blink)
         print "Ready to blink." 
