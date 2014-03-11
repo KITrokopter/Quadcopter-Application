@@ -100,7 +100,7 @@ class CrazyflieNode:
         self.cmd_thrust = 0
         
         #initialize the services
-        #init_search_link_service()
+        init_search_link_service()
         init_open_link_service()
         init_close_link_service()
         init_blink_service()
@@ -123,15 +123,15 @@ class CrazyflieNode:
         self.crazyflie.link_quality_updated.add_callback(self.linkQuality)
         self.crazyflie.packet_received.add_callback(self.receivedPacket)
     
-    #def init_search_link_service():
-	#rospy.Service('search_links_' + str(self.id), search_links, handle_search_links)
+    def init_search_link_service():
+	rospy.Service('search_links_' + str(self.id), search_links, handle_search_links)
 	
-    #def handle_search_links(req):
-        #available = cflib.crtp.scan_interfaces()
-        #channels = set()
-        #for i in available:
-        #    channels.add(available[1])
-        #return search_linksResponse(channels)
+    def handle_search_links(req):
+        available = cflib.crtp.scan_interfaces()
+        channels = set()
+        for i in available:
+            channels.add(available[1])
+        return search_linksResponse(channels)
     
     def handle_open_link(req):
         self.link_channel = req.channel
