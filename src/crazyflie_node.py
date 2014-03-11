@@ -127,10 +127,10 @@ class CrazyflieNode:
 	rospy.Service('search_links_' + str(self.id), search_links, handle_search_links)
 	
     def handle_search_links(req):
-	available = cflib.crtp.scan_interfaces()
-	channels = set()
-	for i in available
-	    channels.add(available[1])
+        available = cflib.crtp.scan_interfaces()
+        channels = set()
+        for i in available:
+            channels.add(available[1])
         return search_linksResponse(channels)
     
     def handle_open_link(req):
