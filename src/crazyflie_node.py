@@ -125,12 +125,6 @@ class CrazyflieNode:
         
         rospy.loginfo("All crazyflie callbacks successfully initialized")
         
-        #initialize the services
-        self.init_search_links_service()
-        self.init_open_link_service()
-        self.init_close_link_service()
-        self.init_blink_service()
-        
         rospy.loginfo("All services successfully initialized")
         
         self.crazyflie.open_link("radio://" + str(self.dongle_id) + "/" + str(self.link_channel) + "/250K")
@@ -138,6 +132,14 @@ class CrazyflieNode:
         
         #init the ROS topic for controlling the quadcopter
         rospy.Subscriber('quadcopter_movement_' + str(self.id), quadcopter_movement, self.set_movement)
+        
+        #initialize the services
+        self.init_search_links_service()
+        self.init_open_link_service()
+        self.init_close_link_service()
+        self.init_blink_service()
+        
+        
     
     #get the module id from the api
     def retrieve_id(self):
@@ -322,6 +324,7 @@ def run():
     rospy.loginfo("ros node successfully initialized")
 
     node = CrazyflieNode()
+    rospy.sleep(1)
     rospy.loginfo("crazyflie node successfully initialized")
     while not rospy.is_shutdown():
         node.run_node()
