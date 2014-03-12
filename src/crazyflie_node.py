@@ -135,11 +135,9 @@ class CrazyflieNode:
         rospy.wait_for_service('announce')
         try:
             retrieve_id_service = rospy.ServiceProxy('announce', Announce)
-            srv = Announce()
-            #srv.header.stamp = rospy.Time.now()
-            srv.type = 1
-            srv.camera_id = 0
-            response = retrieve_id_service(srv)
+            h = std_msgs.msg.Header()
+            h.stamp = rospy.Time.now()
+            response = retrieve_id_service(h, 1, 0)
             if response.id == -1:
                 rospy.logerr("Error during announcement")
             else:
