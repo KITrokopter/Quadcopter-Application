@@ -288,6 +288,7 @@ class CrazyflieNode:
 
     def receivedPacket(self, pk):
         print("got a packet")
+        print(pk)
         self.packetsSinceConnection += 1
 
     def set_movement(self, data):
