@@ -60,10 +60,10 @@ LOGVARS_STABILIZER = ['stabilizer.roll',
                     'stabilizer.yaw',
                     'stabilizer.thrust'
                     ]
-LOGVARS_STABILIZER_INTERVALL = 50
+LOGVARS_STABILIZER_INTERVALL = 100
 
 LOGVARS_SYSTEM = ['pm.vbat']    
-LOGVARS_SYSTEM_INTERVALL = 500
+LOGVARS_SYSTEM_INTERVALL = 1000
 
 class CrazyflieNode:
 
@@ -322,7 +322,7 @@ def run():
     rospy.loginfo("crazyflie node successfully initialized")
     while not rospy.is_shutdown():
         node.run_node()
-        rospy.sleep(0.05)
+        rospy.sleep(0.1)
     node.shut_down()
         
         
