@@ -203,7 +203,7 @@ class CrazyflieNode:
         self.crazyflie.close_link()
 
     def onLogError(self, data):
-        rospy.logerror("Log error")
+        rospy.logerr("Log error")
     
     def on_log_data_motor(self, timestamp, data, logconf):
         self.motor_m1 = data['motor.m1']
@@ -264,7 +264,7 @@ class CrazyflieNode:
             lgSy.start()
             rospy.loginfo("Crazyflie sensor log successfully started")
         else:
-            rospy.logerror("Error while starting crazyflie sensr logs")
+            rospy.logerr("Error while starting crazyflie sensr logs")
             logger.warning("Could not setup logconfiguration after connection!")
 
     def disconnected(self, linkURI):
@@ -272,11 +272,11 @@ class CrazyflieNode:
     
     def connectionLost(self, linkURI, errmsg):
         self.link_status = "Connection Lost - " + errmsg
-        rospy.logerror("Lost connection to quadcopter")
+        rospy.logerr("Lost connection to quadcopter")
 
     def connectionFailed(self, linkURI, errmsg):
         self.link_status = "Connection Failed - " + errmsg
-        rospy.logerror("Connection to quadcopter failed")
+        rospy.logerr("Connection to quadcopter failed")
 
     def linkQuality(self, percentage):
         self.link_quality = percentage
