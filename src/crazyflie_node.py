@@ -38,8 +38,7 @@ from cflib.crazyflie.log import Log, LogVariable, LogConfig
 from quadcopter_application.srv import *
 from quadcopter_application.msg import *
 
-import api_application.srv
-import Announce.srv
+from api_application.srv import Announce
 
 #TODO why do we need this import?
 from control_application.msg import *
@@ -136,7 +135,7 @@ class CrazyflieNode:
         rospy.wait_for_service('announce')
         try:
             retrieve_id_service = rospy.ServiceProxy('announce', Announce)
-            srv = api_application.srv.Announce()
+            srv = Announce()
             srv.header.stamp = rospy.Time.now()
             srv.type = 1
             srv.camera_id = 0
