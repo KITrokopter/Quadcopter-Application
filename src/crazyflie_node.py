@@ -165,7 +165,7 @@ class CrazyflieNode:
 
     def init_open_link_service(self):
         #service for opening a link to a quadcopter
-        s = rospy.Service('open_link_' + str(self.id), open_link, handle_open_link)
+        s = rospy.Service('open_link_' + str(self.id), open_link, self.handle_open_link)
         print "Ready to open a link to a quadcopter."
         
     def handle_close_link(req):
