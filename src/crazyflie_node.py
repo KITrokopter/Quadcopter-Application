@@ -173,7 +173,7 @@ class CrazyflieNode:
 
     def init_close_link_service(self):
         #service for closing the link to the quadcopter
-        s = rospy.Service('close_link_' + str(self.id), close_link, handle_close_link)
+        s = rospy.Service('close_link_' + str(self.id), close_link, self.handle_close_link)
         print "Ready to close a link to a quadcopter."
 
     def handle_blink(req):
