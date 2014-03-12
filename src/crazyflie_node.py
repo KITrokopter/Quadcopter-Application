@@ -68,14 +68,13 @@ LOGVARS_SYSTEM_INTERVALL = 500
 class CrazyflieNode:
 
     def __init__(self):
-        print("init started")
+        rospy.loginfo("Init started")
 
         #Connect to Crazyflie, initialize drivers and set up callback.
 
         #the module id which this apllication gets from the api
         self.id = 0
         self.retrieve_id();
-        print("Good morning sunshine")
         
         self.dongle_id = 0
         
@@ -106,12 +105,6 @@ class CrazyflieNode:
         self.cmd_yaw = 0.0
         self.cmd_thrust = 0
         
-        #initialize the services
-        self.init_search_links_service()
-        self.init_open_link_service()
-        self.init_close_link_service()
-        self.init_blink_service()
-        print("The tank is clean")
         # Init the callbacks for the crazyflie lib
         self.crazyflie = Crazyflie()
         cflib.crtp.init_drivers()
@@ -125,14 +118,24 @@ class CrazyflieNode:
         self.crazyflie.disconnected.add_callback(self.disconnected)
         self.crazyflie.connection_lost.add_callback(self.connectionLost)
         self.crazyflie.connection_failed.add_callback(self.connectionFailed)
-        print("The sun is shining")
+
         # Link quality callbacks
         self.crazyflie.link_quality_updated.add_callback(self.linkQuality)
         self.crazyflie.packet_received.add_callback(self.receivedPacket)
+        
+        rospy.loginfo("All crazyflie callbacks successfully initialized")
+        
+        #initialize the services
+        self.init_search_links_service()
+        self.init_open_link_service()
+        self.init_close_link_service()
+        self.init_blink_service()
+        
+        rospy.loginfo("All services successfully initialized")
     
     #get the module id from the api
     def retrieve_id(self):
-        print("waiting for announce service")
+        rospy.loginfo("Waiting for announce service")
         rospy.wait_for_service('announce')
         try:
             retrieve_id_service = rospy.ServiceProxy('announce', Announce)
@@ -143,6 +146,7 @@ class CrazyflieNode:
                 rospy.logerr("Error during announcement")
             else:
                 self.id = response.id
+                rospy.loginfo("Got id %d", self.id)
         except rospy.ServiceException, e:
             print "Service call failed: %s"%e      
         
@@ -159,6 +163,7 @@ class CrazyflieNode:
     def handle_open_link(req):
         self.link_channel = req.channel
         self.crazyflie.open_link("radio://" + str(self.dongle_id) + "/" + str(self.link_channel) + "/250K")
+        rospy.loginfo("Opened link with uri " + "radio://" + str(self.dongle_id) + "/" + str(self.link_channel) + "/250K")
         
         #init the ROS topic for controlling the quadcopter
         rospy.Subscriber('quadcopter_movement_' + str(self.id), quadcopter_movement, self.set_movement)
@@ -166,7 +171,7 @@ class CrazyflieNode:
     def init_open_link_service(self):
         #service for opening a link to a quadcopter
         s = rospy.Service('open_link_' + str(self.id), open_link, self.handle_open_link)
-        print "Ready to open a link to a quadcopter."
+        rospy.loginfo("Ready to open a link to a quadcopter.")
         
     def handle_close_link(req):
         shut_down()
@@ -174,7 +179,7 @@ class CrazyflieNode:
     def init_close_link_service(self):
         #service for closing the link to the quadcopter
         s = rospy.Service('close_link_' + str(self.id), close_link, self.handle_close_link)
-        print "Ready to close a link to a quadcopter."
+        rospy.loginfo("Ready to close a link to a quadcopter.")
 
     def handle_blink(req):
         #set the trust to make the rotors spin but not to start the quadcopter
@@ -185,16 +190,14 @@ class CrazyflieNode:
     def init_blink_service(self):
         #service for blinking to see which quadcopter is managed
         s = rospy.Service('blink_' + str(self.id), blink, self.handle_blink)
-        print "Ready to blink." 
+        rospy.loginfo("Ready to blink.")
 
     def shut_down(self):
-        try:
-            print("shut down")
-        finally:
-            self.crazyflie.close_link()
+        rospy.loginfo("Shutting down")
+        self.crazyflie.close_link()
 
     def onLogError(self, data):
-        print("Log error!")
+        rospy.logerror("Log error")
     
     def on_log_data_motor(self, timestamp, data, logconf):
         self.motor_m1 = data['motor.m1']
@@ -226,42 +229,36 @@ class CrazyflieNode:
         it receives data, which prints the data from the logging packet's
         data dictionary as logging info.
         """
-        print("start logs")
         lgM = LogConfig("logM", LOGVARS_MOTOR_INTERVALL)
         for f in LOGVARS_MOTOR:
             lgM.add_variable(f)
-        print("added vars to log m")
         self.crazyflie.log.add_config(lgM)
         
         lgSt = LogConfig("logSt", LOGVARS_STABILIZER_INTERVALL)
         for f in LOGVARS_STABILIZER:
             lgSt.add_variable(f)
-        print("added vars to log st")
         self.crazyflie.log.add_config(lgSt)
         
         lgSy = LogConfig("logSy", LOGVARS_SYSTEM_INTERVALL)
         for f in LOGVARS_SYSTEM:
             lgSy.add_variable(f)
-        print("added vars to log sy")
         self.crazyflie.log.add_config(lgSy)
         
-        print("added conf")
         if (lgM.valid and lgSt.valid and lgSy.valid):
-            print("all valid")
             lgM.data_received_cb.add_callback(self.on_log_data_motor)
             lgSt.data_received_cb.add_callback(self.on_log_data_stabilizer)
             lgSy.data_received_cb.add_callback(self.on_log_data_system)
-            print("added data cb")
+
             lgM.error_cb.add_callback(self.onLogError)
             lgSt.error_cb.add_callback(self.onLogError)
             lgSy.error_cb.add_callback(self.onLogError)
-            print("added error cb")
+
             lgM.start()
             lgSt.start()
             lgSy.start()
-            print("started log")
+            rospy.loginfo("Crazyflie sensor log successfully started")
         else:
-            print("invalid")
+            rospy.logerror("Error while starting crazyflie sensr logs")
             logger.warning("Could not setup logconfiguration after connection!")
 
     def disconnected(self, linkURI):
@@ -269,9 +266,11 @@ class CrazyflieNode:
     
     def connectionLost(self, linkURI, errmsg):
         self.link_status = "Connection Lost - " + errmsg
+        rospy.logerror("Lost connection to quadcopter")
 
     def connectionFailed(self, linkURI, errmsg):
         self.link_status = "Connection Failed - " + errmsg
+        rospy.logerror("Connection to quadcopter failed")
 
     def linkQuality(self, percentage):
         self.link_quality = percentage
@@ -311,11 +310,10 @@ class CrazyflieNode:
         
 def run():
     rospy.init_node('crazyflie', log_level=rospy.DEBUG)
-    print("ros node initialized")
+    rospy.loginfo("ros node successfully initialized")
 
-    #TODO: organize this into several classes that monitor/control one specific thing (if necessary)
     node = CrazyflieNode()
-    print("cf node initialized")
+    rospy.loginfo("crazyflie node successfully initialized")
     while not rospy.is_shutdown():
         node.run_node()
         rospy.sleep(0.05)
