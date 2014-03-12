@@ -137,7 +137,7 @@ class CrazyflieNode:
             srv.type = 1
             srv.camera_id = 0
             response = retrieve_id_service(srv)
-            if response.id = -1:
+            if response.id == -1:
                 rospy.logerr("Error during announcement")
             else:
                 self.id = response.id
