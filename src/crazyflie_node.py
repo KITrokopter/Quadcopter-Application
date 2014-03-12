@@ -147,7 +147,7 @@ class CrazyflieNode:
             print "Service call failed: %s"%e      
         
     def init_search_links_service(self):
-        rospy.Service('search_links_' + str(self.id), self, self.handle_search_links)
+        rospy.Service('search_links_' + str(self.id), search_links, self.handle_search_links)
         
     def handle_search_links(req):
         available = cflib.crtp.scan_interfaces()
@@ -161,11 +161,11 @@ class CrazyflieNode:
         self.crazyflie.open_link("radio://" + str(self.dongle_id) + "/" + str(self.link_channel) + "/250K")
         
         #init the ROS topic for controlling the quadcopter
-        rospy.Subscriber('quadcopter_movement_' + str(self.id), self, self.set_movement)
+        rospy.Subscriber('quadcopter_movement_' + str(self.id), quadcopter_movement, self.set_movement)
 
     def init_open_link_service(self):
         #service for opening a link to a quadcopter
-        s = rospy.Service('open_link_' + str(self.id), self, handle_open_link)
+        s = rospy.Service('open_link_' + str(self.id), open_link, handle_open_link)
         print "Ready to open a link to a quadcopter."
         
     def handle_close_link(req):
