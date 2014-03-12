@@ -60,7 +60,7 @@ LOGVARS_STABILIZER = ['stabilizer.roll',
                     'stabilizer.yaw',
                     'stabilizer.thrust'
                     ]
-LOGVARS_STABILIZER_INTERVALL = 100
+LOGVARS_STABILIZER_INTERVALL = 50
 
 LOGVARS_SYSTEM = ['pm.vbat']    
 LOGVARS_SYSTEM_INTERVALL = 1000
@@ -212,6 +212,9 @@ class CrazyflieNode:
         self.motor_m1 = data['motor.m4']
         
     def on_log_data_stabilizer(self, timestamp, data, logconf):
+        print("got data!!!")
+        print(data)
+        
         self.stabilizer_roll = data['stabilizer.roll']
         self.stabilizer_pitch = data['stabilizer.pitch']
         self.stabilizer_yaw = data['stabilizer.yaw']
