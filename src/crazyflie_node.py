@@ -325,8 +325,8 @@ def run():
     rospy.loginfo("ros node successfully initialized")
 
     node = CrazyflieNode()
-    rospy.sleep(1)
     rospy.loginfo("crazyflie node successfully initialized")
+    rospy.spin()
         
         
 if __name__ == '__main__':
