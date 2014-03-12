@@ -127,7 +127,7 @@ class CrazyflieNode:
         self.crazyflie.packet_received.add_callback(self.receivedPacket)
     
     #get the module id from the api
-    def retrieve_id():
+    def retrieve_id(self):
         print("waiting for announce service")
         rospy.wait_for_service('announce')
         try:
