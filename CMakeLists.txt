@@ -54,8 +54,8 @@ add_service_files(
   FILES
   blink.srv
   close_link.srv
-  find_all.srv
   open_link.srv
+  search_links.srv
 )
 
 ## Generate services in the 'srv' folder
