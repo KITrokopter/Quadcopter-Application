@@ -327,10 +327,6 @@ def run():
     node = CrazyflieNode()
     rospy.sleep(1)
     rospy.loginfo("crazyflie node successfully initialized")
-    while not rospy.is_shutdown():
-        node.run_node()
-        rospy.sleep(0.05)
-    node.shut_down()
         
         
 if __name__ == '__main__':
