@@ -184,7 +184,7 @@ class CrazyflieNode:
 
     def init_blink_service(self):
         #service for blinking to see which quadcopter is managed
-        s = rospy.Service('blink_' + str(self.id), blink, handle_blink)
+        s = rospy.Service('blink_' + str(self.id), blink, self.handle_blink)
         print "Ready to blink." 
 
     def shut_down(self):
