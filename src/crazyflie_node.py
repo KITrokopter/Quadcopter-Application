@@ -132,6 +132,13 @@ class CrazyflieNode:
         self.init_blink_service()
         
         rospy.loginfo("All services successfully initialized")
+        
+        self.link_channel = req.channel
+        self.crazyflie.open_link("radio://" + str(self.dongle_id) + "/" + str(self.link_channel) + "/250K")
+        rospy.loginfo("Opened link with uri " + "radio://" + str(self.dongle_id) + "/" + str(self.link_channel) + "/250K")
+        
+        #init the ROS topic for controlling the quadcopter
+        rospy.Subscriber('quadcopter_movement_' + str(self.id), quadcopter_movement, self.set_movement)
     
     #get the module id from the api
     def retrieve_id(self):
