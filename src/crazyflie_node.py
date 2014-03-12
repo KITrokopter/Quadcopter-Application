@@ -133,7 +133,6 @@ class CrazyflieNode:
         
         rospy.loginfo("All services successfully initialized")
         
-        self.link_channel = req.channel
         self.crazyflie.open_link("radio://" + str(self.dongle_id) + "/" + str(self.link_channel) + "/250K")
         rospy.loginfo("Opened link with uri " + "radio://" + str(self.dongle_id) + "/" + str(self.link_channel) + "/250K")
         
