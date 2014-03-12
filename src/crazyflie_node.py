@@ -150,7 +150,7 @@ class CrazyflieNode:
     def handle_search_links(req):
         available = cflib.crtp.scan_interfaces()
         channels = set()
-        for i in available
+        for i in available:
             channels.add(available[1])
         return search_linksResponse(channels)
     
