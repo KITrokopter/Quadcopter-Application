@@ -75,6 +75,7 @@ class CrazyflieNode:
         #the module id which this apllication gets from the api
         self.id = 0
         self.retrieve_id();
+        print("Good morning sunshine")
         
         self.dongle_id = 0
         
@@ -110,7 +111,7 @@ class CrazyflieNode:
         self.init_open_link_service()
         self.init_close_link_service()
         self.init_blink_service()
-
+        print("The tank is clean")
         # Init the callbacks for the crazyflie lib
         self.crazyflie = Crazyflie()
         cflib.crtp.init_drivers()
@@ -124,7 +125,7 @@ class CrazyflieNode:
         self.crazyflie.disconnected.add_callback(self.disconnected)
         self.crazyflie.connection_lost.add_callback(self.connectionLost)
         self.crazyflie.connection_failed.add_callback(self.connectionFailed)
-
+        print("The sun is shining")
         # Link quality callbacks
         self.crazyflie.link_quality_updated.add_callback(self.linkQuality)
         self.crazyflie.packet_received.add_callback(self.receivedPacket)
