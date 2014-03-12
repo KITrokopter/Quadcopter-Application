@@ -136,7 +136,7 @@ class CrazyflieNode:
         try:
             retrieve_id_service = rospy.ServiceProxy('announce', Announce)
             srv = Announce()
-            srv.header.stamp = rospy.Time.now()
+            #srv.header.stamp = rospy.Time.now()
             srv.type = 1
             srv.camera_id = 0
             response = retrieve_id_service(srv)
