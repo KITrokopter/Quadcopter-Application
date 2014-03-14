@@ -22,7 +22,7 @@ class CrazyDemo(object):
         roll = INITIAL_ROLL
         pitch = INITIAL_PITCH
         yaw = INITIAL_YAW
-        pub = rospy.Publisher('quadcopter_controll_0', quadcopter_controll)
+        pub = rospy.Publisher('quadcopter_movement_26', quadcopter_movement)
         rospy.init_node('crazyflie_sender')
 
         while not rospy.is_shutdown():
@@ -48,7 +48,13 @@ class CrazyDemo(object):
             else:
                 thrust = thrust;
             rospy.loginfo(str)
-            pub.publish(0, thrust, roll, pitch, yaw)
+            msg = quadcopter_movement()
+            msg.header.stamp = rospy.Time.now()
+            msg.thrust = thrust
+            msg.roll = roll
+            msg.pitch = pitch
+            msg.yaw = yaw
+            pub.publish(msg)
             rospy.sleep(0.05)
 
 c = CrazyDemo()
