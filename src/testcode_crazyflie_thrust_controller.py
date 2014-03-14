@@ -11,7 +11,7 @@ logger = logging.getLogger()
 INITIAL_ROLL = 0.0
 INITIAL_PITCH = 0.0
 INITIAL_YAW = 0
-INITIAL_THRUST = 10001
+INITIAL_THRUST = 20001
 
 class CrazyDemo(object):
 
@@ -22,7 +22,7 @@ class CrazyDemo(object):
         roll = INITIAL_ROLL
         pitch = INITIAL_PITCH
         yaw = INITIAL_YAW
-        pub = rospy.Publisher('quadcopter_movement_26', quadcopter_movement)
+        pub = rospy.Publisher('quadcopter_movement_37', quadcopter_movement)
         rospy.init_node('crazyflie_sender')
 
         while not rospy.is_shutdown():
