@@ -236,33 +236,33 @@ class CrazyflieNode:
         it receives data, which prints the data from the logging packet's
         data dictionary as logging info.
         """
-        #lgM = LogConfig("logM", LOGVARS_MOTOR_INTERVALL)
-        #for f in LOGVARS_MOTOR:
-            #lgM.add_variable(f)
-        #self.crazyflie.log.add_config(lgM)
+        lgM = LogConfig("logM", LOGVARS_MOTOR_INTERVALL)
+        for f in LOGVARS_MOTOR:
+            lgM.add_variable(f)
+        self.crazyflie.log.add_config(lgM)
         
         lgSt = LogConfig("logSt", LOGVARS_STABILIZER_INTERVALL)
         for f in LOGVARS_STABILIZER:
             lgSt.add_variable(f)
         self.crazyflie.log.add_config(lgSt)
         
-        #lgSy = LogConfig("logSy", LOGVARS_SYSTEM_INTERVALL)
-        #for f in LOGVARS_SYSTEM:
-            #lgSy.add_variable(f)
-        #self.crazyflie.log.add_config(lgSy)
+        lgSy = LogConfig("logSy", LOGVARS_SYSTEM_INTERVALL)
+        for f in LOGVARS_SYSTEM:
+            lgSy.add_variable(f)
+        self.crazyflie.log.add_config(lgSy)
         
         if (lgSt.valid):
-            #lgM.data_received_cb.add_callback(self.on_log_data_motor)
+            lgM.data_received_cb.add_callback(self.on_log_data_motor)
             lgSt.data_received_cb.add_callback(self.on_log_data_stabilizer)
-            #lgSy.data_received_cb.add_callback(self.on_log_data_system)
+            lgSy.data_received_cb.add_callback(self.on_log_data_system)
 
-            #lgM.error_cb.add_callback(self.onLogError)
+            lgM.error_cb.add_callback(self.onLogError)
             lgSt.error_cb.add_callback(self.onLogError)
-            #lgSy.error_cb.add_callback(self.onLogError)
+            lgSy.error_cb.add_callback(self.onLogError)
 
-            #lgM.start()
+            lgM.start()
             lgSt.start()
-            #lgSy.start()
+            lgSy.start()
             rospy.loginfo("Crazyflie sensor log successfully started")
         else:
             rospy.logerr("Error while starting crazyflie sensr logs")
@@ -311,8 +311,8 @@ class CrazyflieNode:
         self.publisher.publish(msg)
         # Send commands to the Crazyflie
         # DEBUG
-        #rospy.loginfo(rospy.get_name() + ": Sending setpoint: %f, %f, %f, %d" %
-        #       (self.cmd_roll, self.cmd_pitch, self.cmd_yaw, self.cmd_thrust))
+        rospy.loginfo(rospy.get_name() + ": Sending setpoint: %f, %f, %f, %d" %
+               (self.cmd_roll, self.cmd_pitch, self.cmd_yaw, self.cmd_thrust))
         self.crazyflie.commander.send_setpoint(self.cmd_roll, self.cmd_pitch, self.cmd_yaw, self.cmd_thrust)
         
 def run():
