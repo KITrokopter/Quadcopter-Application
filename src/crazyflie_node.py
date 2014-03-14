@@ -212,10 +212,7 @@ class CrazyflieNode:
         self.motor_m1 = data['motor.m3']
         self.motor_m1 = data['motor.m4']
         
-    def on_log_data_stabilizer(self, timestamp, data, logconf):
-        print("got data!!!")
-        print(data)
-        
+    def on_log_data_stabilizer(self, timestamp, data, logconf):   
         self.stabilizer_roll = data['stabilizer.roll']
         self.stabilizer_pitch = data['stabilizer.pitch']
         self.stabilizer_yaw = data['stabilizer.yaw']
