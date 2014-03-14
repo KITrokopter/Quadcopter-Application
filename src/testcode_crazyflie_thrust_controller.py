@@ -4,7 +4,7 @@ import time
 import threading
 import logging
 
-from quadcopter_application.msg import quadcopter_movement
+from controll_application.msg import quadcopter_movement
 
 logger = logging.getLogger()
 

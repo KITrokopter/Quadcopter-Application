@@ -40,7 +40,6 @@ from quadcopter_application.msg import *
 
 from api_application.srv import Announce
 
-#TODO why do we need this import?
 from control_application.msg import *
 
 logging.basicConfig(level=logging.DEBUG)
