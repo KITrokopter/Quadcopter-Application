@@ -8,7 +8,7 @@ from control_application.msg import quadcopter_movement
 
 logger = logging.getLogger()
 
-ID = 43
+ID = 57
 INITIAL_ROLL = 0.0
 INITIAL_PITCH = 0.0
 INITIAL_YAW = 0.0
@@ -37,7 +37,7 @@ class CrazyDemo(object):
         rospy.sleep(0.5)
         msg = quadcopter_movement()
         msg.header.stamp = rospy.Time.now()
-        thrust 22000
+        thrust = 22000
         msg.thrust = 22000
         msg.roll = roll
         msg.pitch = pitch
