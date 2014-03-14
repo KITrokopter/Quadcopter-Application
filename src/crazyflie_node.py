@@ -322,11 +322,15 @@ class CrazyflieNode:
         
 def run():
     rospy.init_node('crazyflie', log_level=rospy.DEBUG)
-    rospy.loginfo("ros node successfully initialized")
+    print("ros node initialized")
 
+    #TODO: organize this into several classes that monitor/control one specific thing (if necessary)
     node = CrazyflieNode()
-    rospy.loginfo("crazyflie node successfully initialized")
-    rospy.spin()
+    print("cf node initialized")
+    while not rospy.is_shutdown():
+        node.run_node()
+        rospy.sleep(0.05)
+    node.shut_down()
         
         
 if __name__ == '__main__':
