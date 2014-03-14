@@ -28,7 +28,7 @@ class CrazyDemo(object):
         
         msg = quadcopter_movement()
         msg.header.stamp = rospy.Time.now()
-        msg.thrust = 40000
+        msg.thrust = 41000
         msg.roll = roll
         msg.pitch = pitch
         msg.yaw = yaw
@@ -36,8 +36,8 @@ class CrazyDemo(object):
         rospy.sleep(2)
         msg = quadcopter_movement()
         msg.header.stamp = rospy.Time.now()
-        thrust = 39000
-        msg.thrust = 39000
+        thrust = 40000
+        msg.thrust = 40000
         msg.roll = roll
         msg.pitch = pitch
         msg.yaw = yaw
