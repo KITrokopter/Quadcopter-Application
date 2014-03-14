@@ -152,7 +152,7 @@ class CrazyflieNode:
             if response.id == -1:
                 rospy.logerr("Error during announcement")
             else:
-                self.id = response.id
+                self.id = 0
                 rospy.loginfo("Got id %d", self.id)
         except rospy.ServiceException, e:
             print "Service call failed: %s"%e      

@@ -8,7 +8,7 @@ from control_application.msg import quadcopter_movement
 
 logger = logging.getLogger()
 
-ID = 57
+ID = 0
 INITIAL_ROLL = 0.0
 INITIAL_PITCH = 0.0
 INITIAL_YAW = 0.0
