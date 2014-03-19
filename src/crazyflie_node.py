@@ -80,7 +80,7 @@ class CrazyflieNode:
         if rospy.has_param('dongle_id'):
             self.dongle_id = rospy.get_param('dongle_id')
         
-        self.link_channel = 10
+        self.link_channel = 11
         
         self.link_status = "Unknown"
         self.link_quality = 0.0
