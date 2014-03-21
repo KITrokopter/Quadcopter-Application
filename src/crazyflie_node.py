@@ -308,6 +308,9 @@ class CrazyflieNode:
         msg.stabilizer_yaw = self.stabilizer_yaw
         msg.stabilizer_thrust = self.stabilizer_thrust
 
+		rospy.loginfo(rospy.get_name() + ": Sending setpoint: %f, %f, %f, %d" %
+               (self.stabilizer_roll, self.stabilizer_pitch, self.stabilizer_yaw, self.stabilizer_thrust))
+
         self.publisher.publish(msg)
         # Send commands to the Crazyflie
         # DEBUG
