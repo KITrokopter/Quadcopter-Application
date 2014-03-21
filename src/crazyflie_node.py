@@ -309,6 +309,7 @@ class CrazyflieNode:
         msg.stabilizer_thrust = self.stabilizer_thrust
 
 	if self.stabilizer_thrust > 45000:
+		rospy.loginfo("Over 45000")
 		rospy.loginfo(rospy.get_name() + ": Quadcopter received: %f, %f, %f, %d" %
 			(self.stabilizer_roll, self.stabilizer_pitch, self.stabilizer_yaw, self.stabilizer_thrust))
 
