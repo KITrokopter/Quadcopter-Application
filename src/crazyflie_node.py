@@ -156,8 +156,8 @@ class CrazyflieNode:
     def handle_search_links(self, req):
         available = cflib.crtp.scan_interfaces()
         channels = set()
-        for i in available:
-            channels.add(available[1])
+        for uri in available:
+            channels.add(uri[1])
         return search_linksResponse(channels)
     
     def handle_open_link(self, req):
