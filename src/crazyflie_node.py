@@ -134,7 +134,7 @@ class CrazyflieNode:
         return search_linksResponse(channels)
     
     def init_search_links_service(self):
-        s = rospy.Service('search_links_' + str(self.id), search_links, handle_search_links)
+        s = rospy.Service('search_links_' + str(self.id), search_links, self.handle_search_links)
 
     def handle_open_link(req):
         self.link_channel = req.channel
@@ -142,7 +142,7 @@ class CrazyflieNode:
 
     def init_open_link_service(self):
         #service for opening a link to a quadcopter
-        s = rospy.Service('open_link_' + str(self.id), open_link, handle_open_link)
+        s = rospy.Service('open_link_' + str(self.id), open_link, self.handle_open_link)
         print "Ready to open a link to a quadcopter."
 	
     def handle_close_link(req):
@@ -150,7 +150,7 @@ class CrazyflieNode:
 
     def init_close_link_service(self):
 	#service for closing the link to the quadcopter
-        s = rospy.Service('close_link_' + str(self.id), close_link, handle_close_link)
+        s = rospy.Service('close_link_' + str(self.id), close_link, self.handle_close_link)
         print "Ready to close a link to a quadcopter."
 
     def handle_blink(req):
@@ -161,7 +161,7 @@ class CrazyflieNode:
 
     def init_blink_service(self):
         #service for blinking to see which quadcopter is managed
-        s = rospy.Service('blink_' + str(self.id), blink, handle_blink)
+        s = rospy.Service('blink_' + str(self.id), blink, self.handle_blink)
         print "Ready to blink." 
 
     def shut_down(self):
