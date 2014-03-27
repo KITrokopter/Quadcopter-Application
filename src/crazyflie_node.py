@@ -153,14 +153,14 @@ class CrazyflieNode:
     def init_search_links_service(self):
         rospy.Service('search_links_' + str(self.id), search_links, self.handle_search_links)
         
-    def handle_search_links(req):
+    def handle_search_links(self, req):
         available = cflib.crtp.scan_interfaces()
         channels = set()
         for i in available:
             channels.add(available[1])
         return search_linksResponse(channels)
     
-    def handle_open_link(req):
+    def handle_open_link(self, req):
         self.link_channel = req.channel
         self.crazyflie.open_link("radio://" + str(self.dongle_id) + "/" + str(self.link_channel) + "/250K")
         rospy.loginfo("Opened link with uri " + "radio://" + str(self.dongle_id) + "/" + str(self.link_channel) + "/250K")
@@ -173,7 +173,7 @@ class CrazyflieNode:
         s = rospy.Service('open_link_' + str(self.id), open_link, self.handle_open_link)
         rospy.loginfo("Ready to open a link to a quadcopter.")
         
-    def handle_close_link(req):
+    def handle_close_link(self, req):
         shut_down()
 
     def init_close_link_service(self):
@@ -181,7 +181,7 @@ class CrazyflieNode:
         s = rospy.Service('close_link_' + str(self.id), close_link, self.handle_close_link)
         rospy.loginfo("Ready to close a link to a quadcopter.")
 
-    def handle_blink(req):
+    def handle_blink(self, req):
         #set the trust to make the rotors spin but not to start the quadcopter
         self.thrust = 15000
         rospy.sleep(3.0)
