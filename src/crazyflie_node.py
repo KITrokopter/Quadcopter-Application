@@ -163,7 +163,7 @@ class CrazyflieNode:
             rospy.loginfo("try to add " + splitted[2])
             try:
                 channels.append(int(splitted[2])
-            except exceptions.ValueError:
+            except Exception:
                 rospy.logerror("Unable to add channel " + splitted[2] + " as int")                  
         return search_linksResponse(channels)
     
