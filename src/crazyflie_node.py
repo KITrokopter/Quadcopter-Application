@@ -157,7 +157,14 @@ class CrazyflieNode:
         available = cflib.crtp.scan_interfaces()
         channels = list()
         for uri in available:
-            channels.append(uri[1])
+            #we get an uri like "radio://0/10/250K" and have to split it to get the channel 
+            splitted = uri[0].split('/')
+            rospy.loginfo("Found crazyflie with uri " + uri[0])
+            rospy.loginfo("try to add " + splitted[2])
+            try:
+                channels.append(int(splitted[2])
+            except exceptions.ValueError:
+                rospy.logerror("Unable to add channel " + splitted[2] + " as int")                  
         return search_linksResponse(channels)
     
     def handle_open_link(self, req):
