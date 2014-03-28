@@ -190,7 +190,7 @@ class CrazyflieNode:
         #set the trust to make the rotors spin but not to start the quadcopter
         self.cmd_thrust = 35000
         self.run_node()
-        rospy.sleep(5.0)
+        rospy.sleep(1.0)
         self.cmd_thrust = 0
         self.run_node()
         return blinkResponse(0)
