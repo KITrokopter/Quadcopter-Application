@@ -191,7 +191,7 @@ class CrazyflieNode:
         self.thrust = 35000
         rospy.sleep(5.0)
         self.thrust = 0
-        return handle_blinkResponse(0)
+        return blinkResponse(0)
 
     def init_blink_service(self):
         #service for blinking to see which quadcopter is managed
