@@ -160,8 +160,8 @@ class CrazyflieNode:
             #we get an uri like "radio://0/10/250K" and have to split it to get the channel 
             splitted = uri[0].split('/')
             rospy.loginfo("Found crazyflie with uri " + uri[0])
-            rospy.loginfo("try to add " + splitted[2])
-            channels.append(int(splitted[2]))
+            rospy.loginfo("try to add " + splitted[3])
+            channels.append(int(splitted[3]))
         return search_linksResponse(channels)
     
     def handle_open_link(self, req):
