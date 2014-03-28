@@ -189,8 +189,10 @@ class CrazyflieNode:
     def handle_blink(self, req):
         #set the trust to make the rotors spin but not to start the quadcopter
         self.thrust = 35000
+        self.run_node()
         rospy.sleep(5.0)
         self.thrust = 0
+        self.run_node()
         return blinkResponse(0)
 
     def init_blink_service(self):
