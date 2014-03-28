@@ -137,11 +137,6 @@ add_dependencies(
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
  install(PROGRAMS
-   src/crazyflie_node_origin.py
-   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
- )
-
- install(PROGRAMS
    src/testcode_crazyflie_thrust_controller.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
