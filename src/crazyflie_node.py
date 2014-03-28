@@ -161,10 +161,7 @@ class CrazyflieNode:
             splitted = uri[0].split('/')
             rospy.loginfo("Found crazyflie with uri " + uri[0])
             rospy.loginfo("try to add " + splitted[2])
-            try:
-                channels.append(int(splitted[2])
-            except Exception:
-                rospy.logerror("Unable to add channel " + splitted[2] + " as int")                  
+            channels.append(int(splitted[2])                  
         return search_linksResponse(channels)
     
     def handle_open_link(self, req):
