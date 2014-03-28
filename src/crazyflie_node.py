@@ -171,6 +171,7 @@ class CrazyflieNode:
         
         #init the ROS topic for controlling the quadcopter
         rospy.Subscriber('quadcopter_movement_' + str(self.id), quadcopter_movement, self.set_movement)
+        return open_linkResponse(0)
 
     def init_open_link_service(self):
         #service for opening a link to a quadcopter
