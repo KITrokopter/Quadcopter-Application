@@ -308,16 +308,16 @@ class CrazyflieNode:
         msg.stabilizer_yaw = self.stabilizer_yaw
         msg.stabilizer_thrust = self.stabilizer_thrust
 
-	if self.stabilizer_thrust > 45000:
-		rospy.loginfo("Over 45000")
-		rospy.loginfo(rospy.get_name() + ": Quadcopter received: %f, %f, %f, %d" %
-			(self.stabilizer_roll, self.stabilizer_pitch, self.stabilizer_yaw, self.stabilizer_thrust))
+	#if self.stabilizer_thrust > 45000:
+	#	rospy.loginfo("Over 45000")
+	rospy.loginfo(rospy.get_name() + ": Quadcopter received: Roll %f, Pitch %f, %f, %d" %
+		(self.stabilizer_roll, self.stabilizer_pitch, self.stabilizer_yaw, self.stabilizer_thrust))
 
         self.publisher.publish(msg)
         # Send commands to the Crazyflie
         # DEBUG
-        #rospy.loginfo(rospy.get_name() + ": Sending setpoint: %f, %f, %f, %d" %
-       	#        (self.cmd_roll, self.cmd_pitch, self.cmd_yaw, self.cmd_thrust))
+        rospy.loginfo(rospy.get_name() + ": Sending setpoint:Roll %f,Pitch %f, %f, %f, %d" %
+       	        (self.battery_status, self.cmd_roll, self.cmd_pitch, self.cmd_yaw, self.cmd_thrust))
         self.crazyflie.commander.send_setpoint(self.cmd_roll, self.cmd_pitch, self.cmd_yaw, self.cmd_thrust)
         
 def run():
