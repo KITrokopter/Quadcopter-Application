@@ -289,7 +289,7 @@ class CrazyflieNode:
     def set_movement(self, data):
         self.cmd_thrust = data.thrust
         self.cmd_roll = data.roll
-        self.cmd_pitch = data.roll
+        self.cmd_pitch = data.pitch
         self.cmd_yaw = data.yaw
 
     def run_node(self):
