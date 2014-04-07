@@ -23,13 +23,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import rospy
-import logging
-import roslib
-roslib.load_manifest('quadcopter_application')
+#import rospy
+#import logging
+#import roslib
+#roslib.load_manifest('quadcopter_application')
 
 import cflib.crtp
-import std_msgs.msg
 
 from sets import Set
 from cflib.crazyflie import Crazyflie
@@ -40,7 +39,6 @@ from quadcopter_application.msg import *
 
 from api_application.srv import Announce
 
-#TODO why do we need this import?
 from control_application.msg import *
 
 logging.basicConfig(level=logging.DEBUG)
@@ -56,30 +54,39 @@ LOGVARS_MOTOR = ['motor.m1',
 LOGVARS_MOTOR_INTERVALL = 100
 
 LOGVARS_STABILIZER = ['stabilizer.roll',
-                    'stabilizer.pitch',
-                    'stabilizer.yaw',
-                    'stabilizer.thrust'
+                      'stabilizer.pitch',
+                      'stabilizer.yaw',
+                      'stabilizer.thrust'
                     ]
-LOGVARS_STABILIZER_INTERVALL = 50
+LOGVARS_STABILIZER_INTERVALL = 20
+
+LOGVARS_ACC = ['acc.x',
+               'acc.y',
+               'acc.z',
+                    ]
+LOGVARS_ACC_INTERVALL = 20
+
+LOGVARS_BARO = ['baro.aslLong']
+LOGVARS_BARO_INTERVALL = 20
 
 LOGVARS_SYSTEM = ['pm.vbat']    
-LOGVARS_SYSTEM_INTERVALL = 500
+LOGVARS_SYSTEM_INTERVALL = 1000
 
 class CrazyflieNode:
 
     def __init__(self):
-        rospy.loginfo("Init started")
+        #rospy.loginfo("Init started")
 
         #Connect to Crazyflie, initialize drivers and set up callback.
 
         #the module id which this apllication gets from the api
         self.id = 0
-        self.retrieve_id();
+        #self.retrieve_id();
         
         self.dongle_id = 0
         
-        if rospy.has_param('dongle_id'):
-            self.dongle_id = rospy.get_param('dongle_id')
+        #if rospy.has_param('dongle_id'):
+            #self.dongle_id = rospy.get_param('dongle_id')
         
         self.link_channel = 10
         
@@ -88,7 +95,6 @@ class CrazyflieNode:
         self.battery_status = 0.0
         self.packetsSinceConnection = 0
         
-        #currently there is no direct access to the sensor values
         self.stabilizer_roll = 0.0
         self.stabilizer_pitch = 0.0
         self.stabilizer_yaw = 0.0
@@ -99,18 +105,28 @@ class CrazyflieNode:
         self.motor_m3 = 0
         self.motor_m4 = 0
         
+        self.acc_x = 0.0
+        self.acc_y = 0.0
+        self.acc_z = 0.0
+        
+        self.estimated_vel_x = 0.0
+        self.estimated_vel_y = 0.0
+        
+        self.baro = 0.0
+        self.target_baro = 83.9
+        
         #commands are stored to send them with the next package
         self.cmd_roll = 0.0
         self.cmd_pitch = 0.0
         self.cmd_yaw = 0.0
-        self.cmd_thrust = 0
+        self.cmd_thrust = 20000
         
         # Init the callbacks for the crazyflie lib
         self.crazyflie = Crazyflie()
         cflib.crtp.init_drivers()
 
         #init the status publisher topic for ROS
-        self.publisher  = rospy.Publisher('quadcopter_status_' + str(self.id), quadcopter_status, latch=True)
+        #self.publisher  = rospy.Publisher('quadcopter_status_' + str(self.id), quadcopter_status, latch=True)
 
         # TODO Which callbacks are still needed?
         # Connection callbacks
@@ -123,15 +139,18 @@ class CrazyflieNode:
         self.crazyflie.link_quality_updated.add_callback(self.linkQuality)
         self.crazyflie.packet_received.add_callback(self.receivedPacket)
         
-        rospy.loginfo("All crazyflie callbacks successfully initialized")
+        #rospy.loginfo("All crazyflie callbacks successfully initialized")
         
         #initialize the services
-        self.init_search_links_service()
-        self.init_open_link_service()
-        self.init_close_link_service()
-        self.init_blink_service()
+        #self.init_search_links_service()
+        #self.init_open_link_service()
+        #self.init_close_link_service()
+        #self.init_blink_service()
         
-        rospy.loginfo("All services successfully initialized")
+        #rospy.loginfo("All services successfully initialized")
+        
+        #TODO remove again when using ros
+        self.handle_open_link()
     
     #get the module id from the api
     def retrieve_id(self):
@@ -164,14 +183,15 @@ class CrazyflieNode:
             channels.append(int(splitted[3]))
         return search_linksResponse(channels)
     
-    def handle_open_link(self, req):
-        self.link_channel = req.channel
+    #def handle_open_link(self, req):
+    def handle_open_link(self):
+        #self.link_channel = req.channel
         self.crazyflie.open_link("radio://" + str(self.dongle_id) + "/" + str(self.link_channel) + "/250K")
-        rospy.loginfo("Opened link with uri " + "radio://" + str(self.dongle_id) + "/" + str(self.link_channel) + "/250K")
+        #rospy.loginfo("Opened link with uri " + "radio://" + str(self.dongle_id) + "/" + str(self.link_channel) + "/250K")
         
         #init the ROS topic for controlling the quadcopter
-        rospy.Subscriber('quadcopter_movement_' + str(self.id), quadcopter_movement, self.set_movement)
-        return open_linkResponse(0)
+        #rospy.Subscriber('quadcopter_movement_' + str(self.id), quadcopter_movement, self.set_movement)
+        #return open_linkResponse(0)
 
     def init_open_link_service(self):
         #service for opening a link to a quadcopter
@@ -219,6 +239,14 @@ class CrazyflieNode:
         self.stabilizer_yaw = data['stabilizer.yaw']
         self.stabilizer_thrust = data['stabilizer.thrust']
         
+    def on_log_data_acc(self, timestamp, data, logconf):
+        self.acc_x = data['acc.x']
+        self.acc_y = data['acc.y']
+        self.acc_z = data['acc.z']
+        
+    def on_log_data_baro(self, timestamp, data, logconf):
+        self.baro = data['baro.aslLong']    
+        
     def on_log_data_system(self, timestamp, data, logconf):
         self.battery_status = data['pm.vbat']
 
@@ -247,27 +275,45 @@ class CrazyflieNode:
             lgSt.add_variable(f)
         self.crazyflie.log.add_config(lgSt)
         
+        lgAcc = LogConfig("logAcc", LOGVARS_ACC_INTERVALL)
+        for f in LOGVARS_ACC:
+            lgAcc.add_variable(f)
+        self.crazyflie.log.add_config(lgAcc)
+        
+        lgBa = LogConfig("logBa", LOGVARS_BARO_INTERVALL)
+        for f in LOGVARS_BARO:
+            lgBa.add_variable(f)
+        self.crazyflie.log.add_config(lgBa)
+        
         lgSy = LogConfig("logSy", LOGVARS_SYSTEM_INTERVALL)
         for f in LOGVARS_SYSTEM:
             lgSy.add_variable(f)
         self.crazyflie.log.add_config(lgSy)
         
-        if (lgM.valid and lgSt.valid and lgSy.valid):
+        if (lgM.valid and lgSt.valid and lgAcc.valid and lgBa.valid and lgSy.valid):
             lgM.data_received_cb.add_callback(self.on_log_data_motor)
             lgSt.data_received_cb.add_callback(self.on_log_data_stabilizer)
+            lgAcc.data_received_cb.add_callback(self.on_log_data_acc)
+            lgBa.data_received_cb.add_callback(self.on_log_data_baro)
             lgSy.data_received_cb.add_callback(self.on_log_data_system)
 
             lgM.error_cb.add_callback(self.onLogError)
             lgSt.error_cb.add_callback(self.onLogError)
+            lgAcc.error_cb.add_callback(self.onLogError)
+            lgBa.error_cb.add_callback(self.onLogError)
             lgSy.error_cb.add_callback(self.onLogError)
 
             lgM.start()
             lgSt.start()
+            lgAcc.start()
+            lgBa.start()
             lgSy.start()
-            rospy.loginfo("Crazyflie sensor log successfully started")
+            print("Crazyflie sensor log successfully started")
+            #rospy.loginfo("Crazyflie sensor log successfully started")
         else:
-            rospy.logerror("Error while starting crazyflie sensr logs")
-            logger.warning("Could not setup logconfiguration after connection!")
+            #rospy.logerror("Error while starting crazyflie sensr logs")
+            #logger.warning("Could not setup logconfiguration after connection!")
+            print("Logging failed")
 
     def disconnected(self, linkURI):
         self.link_status = "Disconnected"
@@ -291,40 +337,67 @@ class CrazyflieNode:
         self.cmd_roll = data.roll
         self.cmd_pitch = data.pitch
         self.cmd_yaw = data.yaw
+    
+    def stabilize(self):
+        self.estimated_vel_x = 0.85 * self.estimated_vel_x + self.acc_x
+        self.estimated_vel_y = 0.85 * self.estimated_vel_y + self.acc_y
+        if (self.baro != 0.0):
+            self.cmd_thrust += (self.target_baro - self.baro) * 50 * (48000/(self.cmd_thrust + 1))
+            self.cmd_pitch = -self.estimated_vel_y * 12 + self.acc_y * 2
+            self.cmd_roll = -self.estimated_vel_x * 12 + self.acc_x * 2
 
     def run_node(self):
-        msg = quadcopter_status()
-        msg.header.stamp = rospy.Time.now()
+        #msg = quadcopter_status()
+        #msg.header.stamp = rospy.Time.now()
         
-        msg.battery_status = self.battery_status
-        msg.link_quality = self.link_quality
+        #msg.battery_status = self.battery_status
+        #msg.link_quality = self.link_quality
 
-        msg.motor_m1 = self.motor_m1
-        msg.motor_m2 = self.motor_m2
-        msg.motor_m3 = self.motor_m3
-        msg.motor_m4 = self.motor_m4
+        #msg.motor_m1 = self.motor_m1
+        #msg.motor_m2 = self.motor_m2
+        #msg.motor_m3 = self.motor_m3
+        #msg.motor_m4 = self.motor_m4
 
-        msg.stabilizer_roll = self.stabilizer_roll
-        msg.stabilizer_pitch = self.stabilizer_pitch
-        msg.stabilizer_yaw = self.stabilizer_yaw
-        msg.stabilizer_thrust = self.stabilizer_thrust
+        #msg.stabilizer_roll = self.stabilizer_roll
+        #msg.stabilizer_pitch = self.stabilizer_pitch
+        #msg.stabilizer_yaw = self.stabilizer_yaw
+        #msg.stabilizer_thrust = self.stabilizer_thrust
 
-        self.publisher.publish(msg)
+        #self.publisher.publish(msg)
         # Send commands to the Crazyflie
         # DEBUG
         #rospy.loginfo(rospy.get_name() + ": Sending setpoint: %f, %f, %f, %d" %
         #       (self.cmd_roll, self.cmd_pitch, self.cmd_yaw, self.cmd_thrust))
+        self.stabilize()
+        
+        os.system('clear')
+        print("acc_x: " + str(self.acc_x))
+        print("acc_y: " + str(self.acc_y))
+        print("acc_z: " + str(self.acc_z))
+        print("baro: " + str(self.baro))
+        
+        print("\n===============commands======================\n");
+        print("thrust: " + str(self.cmd_thrust))
+        print("roll: " + str(self.cmd_roll))
+        print("pitch: " + str(self.cmd_pitch))
+        
+        print("\n===============estimated velocity======================\n");
+        print("x: " + str(self.estimated_vel_x))
+        print("y: " + str(self.estimated_vel_y))
         self.crazyflie.commander.send_setpoint(self.cmd_roll, self.cmd_pitch, self.cmd_yaw, self.cmd_thrust)
         
 def run():
-    rospy.init_node('crazyflie', log_level=rospy.DEBUG)
-    rospy.loginfo("ros node successfully initialized")
+    #rospy.init_node('crazyflie', log_level=rospy.DEBUG)
+    #rospy.loginfo("ros node successfully initialized")
 
     node = CrazyflieNode()
-    rospy.loginfo("crazyflie node successfully initialized")
-    while not rospy.is_shutdown():
+    #rospy.loginfo("crazyflie node successfully initialized")
+    #while not rospy.is_shutdown():
+    #    node.run_node()
+    #    rospy.sleep(0.05)
+    while 1:
         node.run_node()
-        rospy.sleep(0.05)
+        time.sleep(0.01)   
     node.shut_down()
         
         
