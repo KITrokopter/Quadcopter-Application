@@ -123,7 +123,7 @@ class CrazyflieNode:
         self.cmd_roll = 0.0
         self.cmd_pitch = 0.0
         self.cmd_yaw = 0.0
-        self.cmd_thrust = 20000
+        self.cmd_thrust = 0
         
         # Init the callbacks for the crazyflie lib
         self.crazyflie = Crazyflie()
