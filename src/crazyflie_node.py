@@ -215,7 +215,7 @@ class CrazyflieNode:
         self.run_node()
         return blinkResponse(0)
 
-    def init_blink_service(self):
+    def init_blink_service(self, req):
         #service for blinking to see which quadcopter is managed
         s = rospy.Service('blink_' + str(self.id), blink, self.handle_blink)
         rospy.loginfo("Ready to blink.")
