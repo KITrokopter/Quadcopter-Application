@@ -26,6 +26,9 @@
 import rospy
 import logging
 import roslib
+
+import os
+
 roslib.load_manifest('quadcopter_application')
 
 import cflib.crtp
