@@ -149,9 +149,6 @@ class CrazyflieNode:
         self.init_blink_service()
         
         rospy.loginfo("All services successfully initialized")
-        
-        #TODO remove again when using ros
-        self.handle_open_link()
     
     #get the module id from the api
     def retrieve_id(self):
