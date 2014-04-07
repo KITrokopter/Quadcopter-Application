@@ -369,7 +369,7 @@ class CrazyflieNode:
         msg.acc_y = self.acc_y
         msg.acc_z = self.acc_z
 
-        #self.publisher.publish(msg)
+        self.publisher.publish(msg)
         # Send commands to the Crazyflie
         # DEBUG
         #rospy.loginfo(rospy.get_name() + ": Sending setpoint: %f, %f, %f, %d" %
