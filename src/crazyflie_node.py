@@ -29,19 +29,20 @@
 #roslib.load_manifest('quadcopter_application')
 
 import cflib.crtp
-
+import os
+import time
 from sets import Set
 from cflib.crazyflie import Crazyflie
 from cflib.crazyflie.log import Log, LogVariable, LogConfig
 
-from quadcopter_application.srv import *
-from quadcopter_application.msg import *
+#from quadcopter_application.srv import *
+#from quadcopter_application.msg import *
 
-from api_application.srv import Announce
+#from api_application.srv import Announce
 
-from control_application.msg import *
+#from control_application.msg import *
 
-logging.basicConfig(level=logging.DEBUG)
+#logging.basicConfig(level=logging.DEBUG)
 
 #variables which will be received from the quadcopters
 #split into multiple packages since they would be to big for one single package 
@@ -113,7 +114,7 @@ class CrazyflieNode:
         self.estimated_vel_y = 0.0
         
         self.baro = 0.0
-        self.target_baro = 83.9
+        self.target_baro = 82.5
         
         #commands are stored to send them with the next package
         self.cmd_roll = 0.0
