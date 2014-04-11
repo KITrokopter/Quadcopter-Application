@@ -393,7 +393,7 @@ class CrazyflieNode:
         self.crazyflie.commander.send_setpoint(self.cmd_roll, self.cmd_pitch, self.cmd_yaw, self.cmd_thrust)
         
 def run():
-    rospy.init_node('crazyflie', log_level=rospy.DEBUG)
+    rospy.init_node('crazyflie', anonymous=True, log_level=rospy.DEBUG)
     rospy.loginfo("ros node successfully initialized")
 
     node = CrazyflieNode()
